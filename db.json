@@ -1,0 +1,107 @@
+{
+  "clientes": [
+    {
+      "id": 1,
+      "nome": "João Silva",
+      "cpf": "123.456.789-00",
+      "endereco": "Rua das Flores, 123",
+      "telefone": "(11) 99999-9999",
+      "email": "joao@email.com",
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "nome": "Maria Santos",
+      "cpf": "987.654.321-00",
+      "endereco": "Av. Principal, 456",
+      "telefone": "(11) 88888-8888",
+      "email": "maria@email.com",
+      "createdAt": "2024-01-16T14:20:00Z"
+    }
+  ],
+  "produtos": [
+    {
+      "id": 1,
+      "nome": "Caneta Azul",
+      "codigo": "CAN001",
+      "preco": 2.50,
+      "categoria": "Escritório",
+      "descricao": "Caneta esferográfica azul",
+      "createdAt": "2024-01-10T09:15:00Z"
+    },
+    {
+      "id": 2,
+      "nome": "Caderno Universitário",
+      "codigo": "CAD001",
+      "preco": 15.90,
+      "categoria": "Papelaria",
+      "descricao": "Caderno 96 folhas",
+      "createdAt": "2024-01-11T11:45:00Z"
+    },
+    {
+      "id": 3,
+      "nome": "Lápis HB",
+      "codigo": "LAP001",
+      "preco": 1.25,
+      "categoria": "Escritório",
+      "descricao": "Lápis grafite HB",
+      "createdAt": "2024-01-12T16:30:00Z"
+    }
+  ],
+  "estoque": [
+    {
+      "id": 1,
+      "produtoId": 1,
+      "quantidade": 50,
+      "quantidadeMinima": 10,
+      "ultimaAtualizacao": "2024-01-15T08:00:00Z"
+    },
+    {
+      "id": 2,
+      "produtoId": 2,
+      "quantidade": 25,
+      "quantidadeMinima": 5,
+      "ultimaAtualizacao": "2024-01-16T10:15:00Z"
+    },
+    {
+      "id": 3,
+      "produtoId": 3,
+      "quantidade": 100,
+      "quantidadeMinima": 20,
+      "ultimaAtualizacao": "2024-01-17T07:30:00Z"
+    }
+  ],
+  "vendas": [
+    {
+      "id": 1,
+      "clienteId": 1,
+      "itens": [
+        {
+          "produtoId": 1,
+          "quantidade": 2,
+          "precoUnitario": 2.50
+        },
+        {
+          "produtoId": 2,
+          "quantidade": 1,
+          "precoUnitario": 15.90
+        }
+      ],
+      "total": 20.90,
+      "data": "2024-01-18T14:30:00Z"
+    },
+    {
+      "id": 2,
+      "clienteId": 2,
+      "itens": [
+        {
+          "produtoId": 3,
+          "quantidade": 5,
+          "precoUnitario": 1.25
+        }
+      ],
+      "total": 6.25,
+      "data": "2024-01-19T16:45:00Z"
+    }
+  ]
+}
