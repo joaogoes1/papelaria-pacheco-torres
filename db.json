@@ -2,7 +2,7 @@
   "clientes": [
     {
       "id": 1,
-      "nome": "João Silva",
+      "nome": "João Góes",
       "cpf": "123.456.789-00",
       "endereco": "Rua das Flores, 123",
       "telefone": "(11) 99999-9999",
@@ -11,11 +11,20 @@
     },
     {
       "id": 2,
-      "nome": "Maria Santos",
+      "nome": "Pedro Arenas",
       "cpf": "987.654.321-00",
       "endereco": "Av. Principal, 456",
       "telefone": "(11) 88888-8888",
       "email": "maria@email.com",
+      "createdAt": "2024-01-16T14:20:00Z"
+    },
+    {
+      "id": 3,
+      "nome": "Frederico",
+      "cpf": "987.655.321-00",
+      "endereco": "Av. Principal, 456",
+      "telefone": "(11) 88881-8888",
+      "email": "freed@email.com",
       "createdAt": "2024-01-16T14:20:00Z"
     }
   ],
