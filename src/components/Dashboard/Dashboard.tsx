@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { Card, Button } from '../../styles/GlobalStyles';
 import { 
   Users, 
@@ -116,11 +117,9 @@ const AlertCard = styled(Card)`
   border-left: 4px solid #ffa500;
 `;
 
-interface DashboardProps {
-  onSectionChange: (section: string) => void;
-}
+const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
 
-const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
   return (
     <>
       <DashboardGrid>
@@ -167,7 +166,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
 
       <SectionTitle>Ações Rápidas</SectionTitle>
       <QuickActions>
-        <ActionCard onClick={() => onSectionChange('clientes')}>
+        <ActionCard onClick={() => navigate('/clientes')}>
           <ActionIcon>
             <Plus size={24} />
           </ActionIcon>
@@ -177,7 +176,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => onSectionChange('produtos')}>
+        <ActionCard onClick={() => navigate('/produtos')}>
           <ActionIcon>
             <Package size={24} />
           </ActionIcon>
@@ -187,7 +186,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => onSectionChange('vendas')}>
+        <ActionCard onClick={() => navigate('/vendas')}>
           <ActionIcon>
             <ShoppingCart size={24} />
           </ActionIcon>
@@ -197,7 +196,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSectionChange }) => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => onSectionChange('estoque')}>
+        <ActionCard onClick={() => navigate('/estoque')}>
           <ActionIcon>
             <Warehouse size={24} />
           </ActionIcon>

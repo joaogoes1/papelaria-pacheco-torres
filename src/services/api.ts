@@ -2,8 +2,11 @@ import axios from 'axios';
 import { Cliente, Produto, Estoque, Venda } from '../types';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:8080',
   timeout: 10000,
+  headers: {
+      "Authorizations": `Bearer ${localStorage.getItem('token')}`
+  }
 });
 
 // Interceptor para tratamento de erros
@@ -14,6 +17,15 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token')
+    if (token) {
+        config.headers.setAuthorization(`Bearer ${token}`)
+    }
+    return config
+});
 
 // Clientes
 export const clientesAPI = {
@@ -27,6 +39,10 @@ export const clientesAPI = {
   update: (id: number, cliente: Omit<Cliente, 'id' | 'createdAt'>) =>
     api.put<Cliente>(`/clientes/${id}`, cliente),
   delete: (id: number) => api.delete(`/clientes/${id}`),
+  exportar: () => api.get('/clientes/exportar'),
+  importar: (filePath: string) => {
+    return api.post('/clientes/importar', { filePath });
+  },
 };
 
 // Produtos
@@ -56,6 +72,7 @@ export const estoqueAPI = {
       ultimaAtualizacao: new Date().toISOString(),
     }),
   delete: (id: number) => api.delete(`/estoque/${id}`),
+  exportar: () => api.get('/estoque/exportar'),
 };
 
 // Vendas
@@ -70,6 +87,12 @@ export const vendasAPI = {
   update: (id: number, venda: Omit<Venda, 'id'>) =>
     api.put<Venda>(`/vendas/${id}`, venda),
   delete: (id: number) => api.delete(`/vendas/${id}`),
+  exportar: () => api.get('/vendas/exportar'),
 };
+
+// Auth
+export const authAPI = {
+  login: (credentials: {username: string, password: string}) => api.post('/login', credentials),
+}
 
 export default api;

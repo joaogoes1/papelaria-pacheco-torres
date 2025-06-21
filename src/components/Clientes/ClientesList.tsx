@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Search, Plus, Edit, Trash2, User } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, User, Upload } from 'lucide-react';
 import {
   Card,
   Button,
@@ -15,6 +15,7 @@ import { useApi, useApiMutation } from '../../hooks/useApi';
 import { clientesAPI } from '../../services/api';
 import { Cliente } from '../../types';
 import ClienteModal from './ClienteModal';
+import ClienteImportModal from './ClienteImportModal';
 
 const HeaderSection = styled.div`
   display: flex;
@@ -23,6 +24,11 @@ const HeaderSection = styled.div`
   margin-bottom: 24px;
   gap: 16px;
   flex-wrap: wrap;
+`;
+
+const HeaderActions = styled.div`
+  display: flex;
+  gap: 16px;
 `;
 
 const Title = styled.h1`
@@ -57,6 +63,7 @@ const ActionButtons = styled.div`
 const ClientesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
   const [editingCliente, setEditingCliente] = useState<Cliente | null>(null);
 
   const { data: clientes, loading, refetch } = useApi(() => clientesAPI.getAll());
@@ -96,6 +103,11 @@ const ClientesList: React.FC = () => {
     handleCloseModal();
   };
 
+  const handleImportSuccess = () => {
+    refetch();
+    setImportModalOpen(false);
+  };
+
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -104,10 +116,16 @@ const ClientesList: React.FC = () => {
     <>
       <HeaderSection>
         <Title>Clientes</Title>
-        <Button onClick={() => setModalOpen(true)}>
-          <Plus size={16} />
-          Novo Cliente
-        </Button>
+        <HeaderActions>
+          <Button onClick={() => setImportModalOpen(true)} variant="secondary">
+            <Upload size={16} />
+            Importar
+          </Button>
+          <Button onClick={() => setModalOpen(true)}>
+            <Plus size={16} />
+            Novo Cliente
+          </Button>
+        </HeaderActions>
       </HeaderSection>
 
       <Card style={{ padding: '24px', marginBottom: '24px' }}>
@@ -195,6 +213,11 @@ const ClientesList: React.FC = () => {
         onClose={handleCloseModal}
         cliente={editingCliente}
         onSave={handleSaveSuccess}
+      />
+      <ClienteImportModal
+        isOpen={importModalOpen}
+        onClose={() => setImportModalOpen(false)}
+        onImportSuccess={handleImportSuccess}
       />
     </>
   );

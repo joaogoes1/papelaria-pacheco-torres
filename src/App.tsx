@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -12,50 +13,40 @@ import ProdutosList from './components/Produtos/ProdutosList';
 import EstoqueList from './components/Estoque/EstoqueList';
 import VendasList from './components/Vendas/VendasList';
 import Relatorios from './components/Relatorios/Relatorios';
+import Login from './components/Login/Login';
 
 const AppWrapper = styled.div`
   min-height: 100vh;
   background: #fafafa;
 `;
 
-const MainContent = styled.main`
-  margin-left: 250px;
+const MainContent = styled.main<{ isLogin: boolean }>`
+  margin-left: ${({ isLogin }) => (isLogin ? '0' : '250px')};
   padding: 32px;
   min-height: calc(100vh - 73px);
 `;
 
-const App: React.FC = () => {
-  const [activeSection, setActiveSection] = useState('dashboard');
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case 'clientes':
-        return <ClientesList />;
-      case 'produtos':
-        return <ProdutosList />;
-      case 'estoque':
-        return <EstoqueList />;
-      case 'vendas':
-        return <VendasList />;
-      case 'relatorios':
-        return <Relatorios />;
-      default:
-        return <Dashboard onSectionChange={setActiveSection} />;
-    }
-  };
+const AppContent: React.FC = () => {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/login';
 
   return (
     <>
       <GlobalStyles />
       <AppWrapper>
-        <Header />
-        <Navigation 
-          activeSection={activeSection} 
-          onSectionChange={setActiveSection} 
-        />
-        <MainContent>
+        {!isLoginPage && <Header />}
+        {!isLoginPage && <Navigation />}
+        <MainContent isLogin={isLoginPage}>
           <Container>
-            {renderContent()}
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/clientes" element={<ClientesList />} />
+              <Route path="/produtos" element={<ProdutosList />} />
+              <Route path="/estoque" element={<EstoqueList />} />
+              <Route path="/vendas" element={<VendasList />} />
+              <Route path="/relatorios" element={<Relatorios />} />
+            </Routes>
           </Container>
         </MainContent>
         <ToastContainer
@@ -73,6 +64,10 @@ const App: React.FC = () => {
       </AppWrapper>
     </>
   );
+};
+
+const App: React.FC = () => {
+  return <AppContent />;
 };
 
 export default App;

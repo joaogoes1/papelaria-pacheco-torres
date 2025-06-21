@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { BarChart3, TrendingUp, Users, Package, Calendar } from 'lucide-react';
-import { Card } from '../../styles/GlobalStyles';
-import { useApi } from '../../hooks/useApi';
+import { BarChart3, TrendingUp, Users, Package, Calendar, Download } from 'lucide-react';
+import { Card, Button } from '../../styles/GlobalStyles';
+import { useApi, useApiMutation } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
 
 const Title = styled.h1`
@@ -10,6 +10,13 @@ const Title = styled.h1`
   font-weight: 600;
   color: #1d1d1f;
   margin-bottom: 24px;
+`;
+
+const ExportSection = styled.div`
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
 `;
 
 const StatsGrid = styled.div`
@@ -139,6 +146,10 @@ const Relatorios: React.FC = () => {
   const { data: produtos } = useApi(() => produtosAPI.getAll());
   const { data: estoque } = useApi(() => estoqueAPI.getAll());
 
+  const { mutate: exportarVendas, loading: loadingVendas } = useApiMutation();
+  const { mutate: exportarClientes, loading: loadingClientes } = useApiMutation();
+  const { mutate: exportarEstoque, loading: loadingEstoque } = useApiMutation();
+
   useEffect(() => {
     if (vendas && clientes && produtos && estoque) {
       const hoje = new Date().toDateString();
@@ -160,6 +171,45 @@ const Relatorios: React.FC = () => {
       });
     }
   }, [vendas, clientes, produtos, estoque]);
+
+  const handleExportVendas = () => {
+    exportarVendas(
+      () => vendasAPI.exportar(),
+      undefined,
+      {
+        successMessage: `Relatório de vendas solicitado. Você o receberá em breve.`,
+        onError: (error) => {
+          console.error(`Erro ao exportar relatório de vendas:`, error);
+        },
+      }
+    );
+  };
+
+  const handleExportClientes = () => {
+    exportarClientes(
+      () => clientesAPI.exportar(),
+      undefined,
+      {
+        successMessage: `Relatório de clientes solicitado. Você o receberá em breve.`,
+        onError: (error) => {
+          console.error(`Erro ao exportar relatório de clientes:`, error);
+        },
+      }
+    );
+  };
+
+  const handleExportEstoque = () => {
+    exportarEstoque(
+      () => estoqueAPI.exportar(),
+      undefined,
+      {
+        successMessage: `Relatório de estoque solicitado. Você o receberá em breve.`,
+        onError: (error) => {
+          console.error(`Erro ao exportar relatório de estoque:`, error);
+        },
+      }
+    );
+  };
 
   const recentSales = vendas?.slice(-5).reverse() || [];
   const lowStockProducts = estoque?.filter(e => e.quantidade <= e.quantidadeMinima) || [];
@@ -183,6 +233,21 @@ const Relatorios: React.FC = () => {
   return (
     <>
       <Title>Relatórios</Title>
+
+      <ExportSection>
+        <Button onClick={handleExportVendas} disabled={loadingVendas}>
+          <Download size={16} />
+          {loadingVendas ? 'Exportando...' : 'Exportar Vendas'}
+        </Button>
+        <Button onClick={handleExportClientes} disabled={loadingClientes}>
+          <Download size={16} />
+          {loadingClientes ? 'Exportando...' : 'Exportar Clientes'}
+        </Button>
+        <Button onClick={handleExportEstoque} disabled={loadingEstoque}>
+          <Download size={16} />
+          {loadingEstoque ? 'Exportando...' : 'Exportar Estoque'}
+        </Button>
+      </ExportSection>
 
       <StatsGrid>
         <StatsCard>

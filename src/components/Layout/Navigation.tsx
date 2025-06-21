@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link, useLocation } from 'react-router-dom';
 import { 
   Users, 
   Package, 
@@ -21,7 +22,7 @@ const NavWrapper = styled.nav`
   overflow-y: auto;
 `;
 
-const NavItem = styled.button<{ active?: boolean }>`
+const NavItem = styled(Link)<{ active?: boolean }>`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -35,6 +36,7 @@ const NavItem = styled.button<{ active?: boolean }>`
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
+  text-decoration: none;
 
   &:hover {
     background: #f8f9fa;
@@ -55,19 +57,15 @@ const NavTitle = styled.div`
   letter-spacing: 0.5px;
 `;
 
-interface NavigationProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-}
-
-const Navigation: React.FC<NavigationProps> = ({ activeSection, onSectionChange }) => {
+const Navigation: React.FC = () => {
+  const location = useLocation();
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'clientes', label: 'Clientes', icon: Users },
-    { id: 'produtos', label: 'Produtos', icon: Package },
-    { id: 'estoque', label: 'Estoque', icon: Warehouse },
-    { id: 'vendas', label: 'Vendas', icon: ShoppingCart },
-    { id: 'relatorios', label: 'Relatórios', icon: BarChart3 },
+    { id: 'dashboard', path: '/', label: 'Dashboard', icon: Home },
+    { id: 'clientes', path: '/clientes', label: 'Clientes', icon: Users },
+    { id: 'produtos', path: '/produtos', label: 'Produtos', icon: Package },
+    { id: 'estoque', path: '/estoque', label: 'Estoque', icon: Warehouse },
+    { id: 'vendas', path: '/vendas', label: 'Vendas', icon: ShoppingCart },
+    { id: 'relatorios', path: '/relatorios', label: 'Relatórios', icon: BarChart3 },
   ];
 
   return (
@@ -79,8 +77,8 @@ const Navigation: React.FC<NavigationProps> = ({ activeSection, onSectionChange 
           return (
             <NavItem
               key={item.id}
-              active={activeSection === item.id}
-              onClick={() => onSectionChange(item.id)}
+              to={item.path}
+              active={location.pathname === item.path}
             >
               <Icon size={18} />
               {item.label}
