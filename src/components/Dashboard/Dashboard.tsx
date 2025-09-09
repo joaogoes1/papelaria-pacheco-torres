@@ -1,16 +1,24 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { Card, Button } from '../../styles/GlobalStyles';
-import { 
-  Users, 
-  Package, 
-  Warehouse, 
-  ShoppingCart, 
+import {
+  AlertTriangle,
+  Package,
   Plus,
+  ShoppingCart,
   TrendingUp,
-  AlertTriangle
-} from 'lucide-react';
+  Users,
+  Warehouse,
+} from "lucide-react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { Card } from "../../styles/GlobalStyles";
+import {
+  BinomialDistributionChart,
+  NormalDistributionChart,
+  SalesBoxplotChart,
+  SalesPerClientChart,
+  StockStatusChart,
+  TopProductsChart,
+} from "../Charts";
 
 const DashboardGrid = styled.div`
   display: grid;
@@ -117,6 +125,16 @@ const AlertCard = styled(Card)`
   border-left: 4px solid #ffa500;
 `;
 
+const ChartsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+`;
+const ChartCard = styled(Card)`
+  padding: 16px;
+`;
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
@@ -166,7 +184,7 @@ const Dashboard: React.FC = () => {
 
       <SectionTitle>Ações Rápidas</SectionTitle>
       <QuickActions>
-        <ActionCard onClick={() => navigate('/clientes')}>
+        <ActionCard onClick={() => navigate("/clientes")}>
           <ActionIcon>
             <Plus size={24} />
           </ActionIcon>
@@ -176,7 +194,7 @@ const Dashboard: React.FC = () => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => navigate('/produtos')}>
+        <ActionCard onClick={() => navigate("/produtos")}>
           <ActionIcon>
             <Package size={24} />
           </ActionIcon>
@@ -186,7 +204,7 @@ const Dashboard: React.FC = () => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => navigate('/vendas')}>
+        <ActionCard onClick={() => navigate("/vendas")}>
           <ActionIcon>
             <ShoppingCart size={24} />
           </ActionIcon>
@@ -196,23 +214,97 @@ const Dashboard: React.FC = () => {
           </ActionDescription>
         </ActionCard>
 
-        <ActionCard onClick={() => navigate('/estoque')}>
+        <ActionCard onClick={() => navigate("/estoque")}>
           <ActionIcon>
             <Warehouse size={24} />
           </ActionIcon>
           <ActionTitle>Controlar Estoque</ActionTitle>
-          <ActionDescription>
-            Gerencie o estoque dos produtos
-          </ActionDescription>
+          <ActionDescription>Gerencie o estoque dos produtos</ActionDescription>
         </ActionCard>
       </QuickActions>
+
+      <SectionTitle>Análise Estatística</SectionTitle>
+      <ChartsGrid>
+        <ChartCard>
+          <NormalDistributionChart media={59.5} desvio={15} min={20} max={90} />
+        </ChartCard>
+
+        <ChartCard>
+          <SalesBoxplotChart
+            valores={[
+              15, 22, 27, 30, 35, 40, 45, 52, 58, 60, 62, 70, 78, 82, 88, 95,
+              100,
+            ]}
+            categoryLabel="total"
+          />
+        </ChartCard>
+
+        <ChartCard>
+          <BinomialDistributionChart n={10} p={0.05} />
+        </ChartCard>
+
+        <ChartCard>
+          <TopProductsChart
+            produtos={[
+              "Marcador Permanente",
+              "Estojo Escolar",
+              "Papel Sulfite A4",
+              "Caderno Universitário",
+              "Apontador",
+              "Cola Branca 90g",
+              "Borracha",
+              "Tesoura",
+              "Lápis HB",
+            ]}
+            quantidades={[20, 18, 16, 15, 13, 11, 11, 10, 7]}
+          />
+        </ChartCard>
+
+        <ChartCard>
+          <StockStatusChart
+            produtos={[
+              "Caneta Azul",
+              "Caderno Universitário",
+              "Lápis HB",
+              "Apontador",
+              "Marcador Permanente",
+              "Cola Branca 90g",
+              "Borracha",
+              "Tesoura",
+              "Papel Sulfite A4",
+              "Estojo Escolar",
+            ]}
+            estoqueAtual={[73, 253, 67, 154, 158, 140, 47, 95, 82, 145]}
+            estoqueMin={[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]}
+          />
+        </ChartCard>
+
+        <ChartCard>
+          <SalesPerClientChart
+            clientes={[
+              "Alexia da Cunha",
+              "Marina Cirino",
+              "Nicolas Cavalcante",
+              "Isis Ferreira",
+              "Luan Siqueira",
+              "Daniel Cavalcante",
+              "Dr. Bento Pinto",
+              "Levi Moraes",
+              "Maria Novais",
+              "Kaique Costa",
+            ]}
+            totais={[100, 95, 90, 85, 80, 70, 60, 50, 40, 30]}
+          />
+        </ChartCard>
+      </ChartsGrid>
 
       <AlertsSection>
         <SectionTitle>Alertas</SectionTitle>
         <AlertCard>
           <AlertTriangle size={20} color="#ffa500" />
           <div>
-            <strong>Estoque baixo:</strong> Alguns produtos estão com estoque próximo ao mínimo.
+            <strong>Estoque baixo:</strong> Alguns produtos estão com estoque
+            próximo ao mínimo.
           </div>
         </AlertCard>
       </AlertsSection>
