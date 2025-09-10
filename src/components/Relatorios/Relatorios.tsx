@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { BarChart3, TrendingUp, Users, Package, Calendar, Download } from 'lucide-react';
 import { Card, Button } from '../../styles/GlobalStyles';
 import { useApi, useApiMutation } from '../../hooks/useApi';
-import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
+import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI, relatoriosAPI } from '../../services/api';
 
 const Title = styled.h1`
   font-size: 24px;
@@ -174,7 +174,7 @@ const Relatorios: React.FC = () => {
 
   const handleExportVendas = () => {
     exportarVendas(
-      () => vendasAPI.exportar(),
+      () => relatoriosAPI.vendas(),
       undefined,
       {
         successMessage: `Relatório de vendas solicitado. Você o receberá em breve.`,
@@ -187,7 +187,7 @@ const Relatorios: React.FC = () => {
 
   const handleExportClientes = () => {
     exportarClientes(
-      () => clientesAPI.exportar(),
+      () => relatoriosAPI.clientes(),
       undefined,
       {
         successMessage: `Relatório de clientes solicitado. Você o receberá em breve.`,
@@ -200,7 +200,7 @@ const Relatorios: React.FC = () => {
 
   const handleExportEstoque = () => {
     exportarEstoque(
-      () => estoqueAPI.exportar(),
+      () => relatoriosAPI.estoque(),
       undefined,
       {
         successMessage: `Relatório de estoque solicitado. Você o receberá em breve.`,

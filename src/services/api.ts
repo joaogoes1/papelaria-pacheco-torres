@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Cliente, Produto, Estoque, Venda } from '../types';
+import { Cliente, Produto, Estoque, Venda, ChartData } from '../types';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080',
@@ -18,11 +18,12 @@ api.interceptors.response.use(
   }
 );
 
+// Interceptor para autenticação
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
     if (token) {
-        config.headers.setAuthorization(`Bearer ${token}`)
+      config.headers.setAuthorization(`Bearer ${token}`)
     }
     return config
 });
@@ -39,7 +40,6 @@ export const clientesAPI = {
   update: (id: number, cliente: Omit<Cliente, 'id' | 'createdAt'>) =>
     api.put<Cliente>(`/clientes/${id}`, cliente),
   delete: (id: number) => api.delete(`/clientes/${id}`),
-  exportar: () => api.get('/clientes/exportar'),
   importar: (filePath: string) => {
     return api.post('/clientes/importar', { filePath });
   },
@@ -72,7 +72,6 @@ export const estoqueAPI = {
       ultimaAtualizacao: new Date().toISOString(),
     }),
   delete: (id: number) => api.delete(`/estoque/${id}`),
-  exportar: () => api.get('/estoque/exportar'),
 };
 
 // Vendas
@@ -87,7 +86,18 @@ export const vendasAPI = {
   update: (id: number, venda: Omit<Venda, 'id'>) =>
     api.put<Venda>(`/vendas/${id}`, venda),
   delete: (id: number) => api.delete(`/vendas/${id}`),
-  exportar: () => api.get('/vendas/exportar'),
+};
+
+export const relatoriosAPI = {
+    clientes: () => api.get('/relatorios/clientes/exportar'),
+    estoque: () => api.get('/relatorios/estoque/exportar'),
+    vendas: () => api.get('/relatorios/vendas/exportar'),
+}
+
+// Dashboard
+export const dashboardAPI = {
+  getDashboard: () => api.get<Dashboard>('/dashboard'),
+  getChartData: () => api.get<ChartData>('/dashboard/charts'),
 };
 
 // Auth

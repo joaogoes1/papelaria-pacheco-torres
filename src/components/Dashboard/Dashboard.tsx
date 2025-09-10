@@ -11,6 +11,9 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Card } from "../../styles/GlobalStyles";
+import { useApi } from '../../hooks/useApi';
+import { dashboardAPI } from '../../services/api';
+import { DashboardAlert } from '../../types';
 import {
   BinomialDistributionChart,
   NormalDistributionChart,
@@ -135,8 +138,33 @@ const ChartCard = styled(Card)`
   padding: 16px;
 `;
 
+const LoadingCard = styled(Card)`
+  padding: 24px;
+  text-align: center;
+  color: #86868b;
+`;
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+
+  const { data: stats, loading: statsLoading } = useApi(() => dashboardAPI.getDashboard());
+  const { data: chartData, loading: chartDataLoading } = useApi(() => dashboardAPI.getChartData());
+  const alerts: DashboardAlert[] = [];
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
+  };
+
+  if (statsLoading || chartDataLoading) {
+    return (
+      <LoadingCard>
+        <div>Carregando dados do dashboard...</div>
+      </LoadingCard>
+    );
+  }
 
   return (
     <>
@@ -147,7 +175,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>2</StatsValue>
+            <StatsValue>{stats?.totalClientes || 0}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -157,7 +185,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>3</StatsValue>
+            <StatsValue>{stats?.totalProdutos || 0}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -167,7 +195,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Itens em Estoque</StatsTitle>
-            <StatsValue>175</StatsValue>
+            <StatsValue>{stats?.totalEstoque || 0}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -177,7 +205,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>R$ 27,15</StatsValue>
+            <StatsValue>{formatCurrency(stats?.vendasHoje || 0)}</StatsValue>
           </StatsContent>
         </StatsCard>
       </DashboardGrid>
@@ -226,88 +254,65 @@ const Dashboard: React.FC = () => {
       <SectionTitle>Análise Estatística</SectionTitle>
       <ChartsGrid>
         <ChartCard>
-          <NormalDistributionChart media={59.5} desvio={15} min={20} max={90} />
-        </ChartCard>
-
-        <ChartCard>
-          <SalesBoxplotChart
-            valores={[
-              15, 22, 27, 30, 35, 40, 45, 52, 58, 60, 62, 70, 78, 82, 88, 95,
-              100,
-            ]}
-            categoryLabel="total"
+          <NormalDistributionChart 
+            media={chartData?.normalDistribution?.media || 0} 
+            desvio={chartData?.normalDistribution?.desvio || 0} 
+            min={chartData?.normalDistribution?.min || 0} 
+            max={chartData?.normalDistribution?.max || 0} 
           />
         </ChartCard>
 
         <ChartCard>
-          <BinomialDistributionChart n={10} p={0.05} />
+          <SalesBoxplotChart
+            valores={chartData?.salesBoxplot?.valores || []}
+            categoryLabel={chartData?.salesBoxplot?.categoryLabel || "total"}
+          />
+        </ChartCard>
+
+        <ChartCard>
+          <BinomialDistributionChart 
+            n={chartData?.binomialDistribution?.n || 0} 
+            p={chartData?.binomialDistribution?.p || 0} 
+          />
         </ChartCard>
 
         <ChartCard>
           <TopProductsChart
-            produtos={[
-              "Marcador Permanente",
-              "Estojo Escolar",
-              "Papel Sulfite A4",
-              "Caderno Universitário",
-              "Apontador",
-              "Cola Branca 90g",
-              "Borracha",
-              "Tesoura",
-              "Lápis HB",
-            ]}
-            quantidades={[20, 18, 16, 15, 13, 11, 11, 10, 7]}
+            produtos={chartData?.topProducts?.produtos || []}
+            quantidades={chartData?.topProducts?.quantidades || []}
           />
         </ChartCard>
 
         <ChartCard>
           <StockStatusChart
-            produtos={[
-              "Caneta Azul",
-              "Caderno Universitário",
-              "Lápis HB",
-              "Apontador",
-              "Marcador Permanente",
-              "Cola Branca 90g",
-              "Borracha",
-              "Tesoura",
-              "Papel Sulfite A4",
-              "Estojo Escolar",
-            ]}
-            estoqueAtual={[73, 253, 67, 154, 158, 140, 47, 95, 82, 145]}
-            estoqueMin={[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]}
+            produtos={chartData?.stockStatus?.produtos || []}
+            estoqueAtual={chartData?.stockStatus?.estoqueAtual || []}
+            estoqueMin={chartData?.stockStatus?.estoqueMin || []}
           />
         </ChartCard>
 
         <ChartCard>
           <SalesPerClientChart
-            clientes={[
-              "Alexia da Cunha",
-              "Marina Cirino",
-              "Nicolas Cavalcante",
-              "Isis Ferreira",
-              "Luan Siqueira",
-              "Daniel Cavalcante",
-              "Dr. Bento Pinto",
-              "Levi Moraes",
-              "Maria Novais",
-              "Kaique Costa",
-            ]}
-            totais={[100, 95, 90, 85, 80, 70, 60, 50, 40, 30]}
+            clientes={chartData?.salesPerClient?.clientes || []}
+            totais={chartData?.salesPerClient?.totais || []}
           />
         </ChartCard>
       </ChartsGrid>
 
-      <AlertsSection>
-        <SectionTitle>Alertas</SectionTitle>
-        <AlertCard>
-          <AlertTriangle size={20} color="#ffa500" />
-          <div>
-            <strong>Estoque baixo:</strong> Alguns produtos estão com estoque
-            próximo ao mínimo.
-          </div>
-        </AlertCard>
-      </AlertsSection>
+      {alerts && alerts.length > 0 && (
+        <AlertsSection>
+          <SectionTitle>Alertas</SectionTitle>
+          {alerts.map((alert: DashboardAlert) => (
+            <AlertCard key={alert.id}>
+              <AlertTriangle size={20} color="#ffa500" />
+              <div>
+                <strong>{alert.tipo === 'estoque_baixo' ? 'Estoque baixo:' :
+                         alert.tipo === 'venda_alta' ? 'Venda alta:' : 'Produto popular:'}</strong> {alert.mensagem}
+              </div>
+            </AlertCard>
+          ))}
+        </AlertsSection>
+      )}
     </>
   );
 };
