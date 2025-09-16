@@ -19,6 +19,7 @@ import {
   StockStatusChart,
   TopProductsChart,
 } from "../Charts";
+import { useDashboardStats, useDashboardCharts } from "../../hooks/useDashboardData";
 
 const DashboardGrid = styled.div`
   display: grid;
@@ -137,6 +138,16 @@ const ChartCard = styled(Card)`
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { stats, loading: statsLoading } = useDashboardStats();
+  const { chartsData, loading: chartsLoading } = useDashboardCharts();
+
+  if (statsLoading || chartsLoading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '50px' }}>
+        <div>Carregando dados do dashboard...</div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -147,7 +158,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>2</StatsValue>
+            <StatsValue>{stats.totalClientes}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -157,7 +168,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>3</StatsValue>
+            <StatsValue>{stats.totalProdutos}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -167,7 +178,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Itens em Estoque</StatsTitle>
-            <StatsValue>175</StatsValue>
+            <StatsValue>{stats.totalItensEstoque}</StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -177,7 +188,7 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>R$ 27,15</StatsValue>
+            <StatsValue>R$ {stats.vendasHoje.toFixed(2)}</StatsValue>
           </StatsContent>
         </StatsCard>
       </DashboardGrid>
@@ -226,87 +237,71 @@ const Dashboard: React.FC = () => {
       <SectionTitle>Análise Estatística</SectionTitle>
       <ChartsGrid>
         <ChartCard>
-          <NormalDistributionChart media={59.5} desvio={15} min={20} max={90} />
+          <NormalDistributionChart 
+            media={chartsData.normalDistribution.media} 
+            desvio={chartsData.normalDistribution.desvio} 
+            min={chartsData.normalDistribution.min} 
+            max={chartsData.normalDistribution.max} 
+          />
         </ChartCard>
 
         <ChartCard>
           <SalesBoxplotChart
-            valores={[
-              15, 22, 27, 30, 35, 40, 45, 52, 58, 60, 62, 70, 78, 82, 88, 95,
-              100,
-            ]}
+            valores={chartsData.salesBoxplot.valores}
             categoryLabel="total"
           />
         </ChartCard>
 
         <ChartCard>
-          <BinomialDistributionChart n={10} p={0.05} />
+          <BinomialDistributionChart 
+            n={chartsData.binomialDistribution.n} 
+            p={chartsData.binomialDistribution.p} 
+          />
         </ChartCard>
 
         <ChartCard>
           <TopProductsChart
-            produtos={[
-              "Marcador Permanente",
-              "Estojo Escolar",
-              "Papel Sulfite A4",
-              "Caderno Universitário",
-              "Apontador",
-              "Cola Branca 90g",
-              "Borracha",
-              "Tesoura",
-              "Lápis HB",
-            ]}
-            quantidades={[20, 18, 16, 15, 13, 11, 11, 10, 7]}
+            produtos={chartsData.topProdutos.produtos}
+            quantidades={chartsData.topProdutos.quantidades}
           />
         </ChartCard>
 
         <ChartCard>
           <StockStatusChart
-            produtos={[
-              "Caneta Azul",
-              "Caderno Universitário",
-              "Lápis HB",
-              "Apontador",
-              "Marcador Permanente",
-              "Cola Branca 90g",
-              "Borracha",
-              "Tesoura",
-              "Papel Sulfite A4",
-              "Estojo Escolar",
-            ]}
-            estoqueAtual={[73, 253, 67, 154, 158, 140, 47, 95, 82, 145]}
-            estoqueMin={[64, 64, 64, 64, 64, 64, 64, 64, 64, 64]}
+            produtos={chartsData.stockStatus.produtos}
+            estoqueAtual={chartsData.stockStatus.estoqueAtual}
+            estoqueMin={chartsData.stockStatus.estoqueMin}
           />
         </ChartCard>
 
         <ChartCard>
           <SalesPerClientChart
-            clientes={[
-              "Alexia da Cunha",
-              "Marina Cirino",
-              "Nicolas Cavalcante",
-              "Isis Ferreira",
-              "Luan Siqueira",
-              "Daniel Cavalcante",
-              "Dr. Bento Pinto",
-              "Levi Moraes",
-              "Maria Novais",
-              "Kaique Costa",
-            ]}
-            totais={[100, 95, 90, 85, 80, 70, 60, 50, 40, 30]}
+            clientes={chartsData.salesPerClient.clientes}
+            totais={chartsData.salesPerClient.totais}
           />
         </ChartCard>
       </ChartsGrid>
 
       <AlertsSection>
         <SectionTitle>Alertas</SectionTitle>
-        <AlertCard>
-          <AlertTriangle size={20} color="#ffa500" />
-          <div>
-            <strong>Estoque baixo:</strong> Alguns produtos estão com estoque
-            próximo ao mínimo.
-          </div>
-        </AlertCard>
+        {chartsData.alertas.length > 0 ? (
+          chartsData.alertas.map((alerta, index) => (
+            <AlertCard key={index}>
+              <AlertTriangle size={20} color="#ffa500" />
+              <div>
+                <strong>Estoque baixo:</strong> Produto ID {alerta.produtoId} está com 
+                {alerta.quantidade} unidades (mínimo: {alerta.quantidadeMinima}).
+              </div>
+            </AlertCard>
+          ))
+        ) : (
+          <AlertCard>
+            <AlertTriangle size={20} color="#34c759" />
+            <div>
+              <strong>Tudo em ordem:</strong> Nenhum produto com estoque baixo.
+            </div>
+          </AlertCard>
+        )}
       </AlertsSection>
     </>
   );

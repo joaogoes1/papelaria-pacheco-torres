@@ -1,15 +1,6 @@
 {
   "clientes": [
     {
-      "id": 1,
-      "nome": "João Góes",
-      "cpf": "123.456.789-00",
-      "endereco": "Rua das Flores, 123",
-      "telefone": "(11) 99999-9999",
-      "email": "joao@email.com",
-      "createdAt": "2024-01-15T10:30:00Z"
-    },
-    {
       "id": 2,
       "nome": "Pedro Arenas",
       "cpf": "987.654.321-00",
@@ -26,6 +17,186 @@
       "telefone": "(11) 88881-8888",
       "email": "freed@email.com",
       "createdAt": "2024-01-16T14:20:00Z"
+    },
+    {
+      "id": 4,
+      "nome": "Thales Martins",
+      "cpf": "428.901.536-06",
+      "endereco": "Largo Teixeira, Andiroba, 05552662 Castro / GO",
+      "telefone": "(041) 3758 8691",
+      "email": "da-matadom@example.com",
+      "createdAt": "2024-11-17T18:28:11.107209"
+    },
+    {
+      "id": 5,
+      "nome": "João Gabriel Pereira",
+      "cpf": "783.120.945-04",
+      "endereco": "Avenida Lopes, 28, Santa Lúcia, 84564-164 Camargo da Praia / MG",
+      "telefone": "+55 71 0645-3376",
+      "email": "marina10@example.org",
+      "createdAt": "2024-11-30T03:57:31.907166"
+    },
+    {
+      "id": 6,
+      "nome": "Bryan Aragão",
+      "cpf": "792.083.146-69",
+      "endereco": "Passarela Castro, 46, Estoril, 30386-766 Vargas do Galho / RR",
+      "telefone": "(081) 9708-0908",
+      "email": "isis84@example.net",
+      "createdAt": "2025-06-24T18:13:29.863484"
+    },
+    {
+      "id": 7,
+      "nome": "Maria Alice Pacheco",
+      "cpf": "031.684.295-89",
+      "endereco": "Vila Viana, 69, Vale Do Jatoba, 39335-242 Ramos do Norte / RJ",
+      "telefone": "(051) 3959 5543",
+      "email": "pachecojoao-miguel@example.org",
+      "createdAt": "2024-12-23T19:48:54.450961"
+    },
+    {
+      "id": 8,
+      "nome": "Luan Siqueira",
+      "cpf": "532.904.186-42",
+      "endereco": "Conjunto Moreira, Boa Esperança, 60193-258 Fonseca Alegre / BA",
+      "telefone": "+55 51 3340 6682",
+      "email": "ian72@example.org",
+      "createdAt": "2024-09-15T05:32:16.856563"
+    },
+    {
+      "id": 9,
+      "nome": "Levi Moraes",
+      "cpf": "508.416.972-30",
+      "endereco": "Parque Kevin Azevedo, Vila Betânia, 02678502 Costela do Sul / PB",
+      "telefone": "+55 31 3182-8933",
+      "email": "zvieira@example.com",
+      "createdAt": "2025-06-17T18:32:45.644814"
+    },
+    {
+      "id": 10,
+      "nome": "Kaique Costa",
+      "cpf": "856.714.290-30",
+      "endereco": "Favela de Almeida, 521, Jardim Guanabara, 42823051 Câmara do Norte / AC",
+      "telefone": "+55 31 8372-3687",
+      "email": "agatha03@example.net",
+      "createdAt": "2025-06-13T23:39:55.030763"
+    },
+    {
+      "id": 11,
+      "nome": "Marcos Vinicius da Conceição",
+      "cpf": "710.624.385-07",
+      "endereco": "Lagoa Viana, 3, João Paulo Ii, 26095292 Pimenta / MA",
+      "telefone": "0300-341-6410",
+      "email": "fariasrebeca@example.com",
+      "createdAt": "2025-02-12T16:49:05.682426"
+    },
+    {
+      "id": 12,
+      "nome": "Maria Luiza Viana",
+      "cpf": "185.270.639-21",
+      "endereco": "Vila Pimenta, 387, Vila Copacabana, 60617191 Pinto / RJ",
+      "telefone": "(061) 0744-9980",
+      "email": "paulo83@example.net",
+      "createdAt": "2024-10-21T12:28:41.547793"
+    },
+    {
+      "id": 13,
+      "nome": "Isis Ferreira",
+      "cpf": "461.089.723-78",
+      "endereco": "Viela Sampaio, 60, Acaba Mundo, 43895620 Ferreira / TO",
+      "telefone": "+55 21 3878 6412",
+      "email": "tguerra@example.net",
+      "createdAt": "2025-01-11T15:27:48.272182"
+    },
+    {
+      "id": 14,
+      "nome": "Dr. Joaquim da Conceição",
+      "cpf": "780.156.243-71",
+      "endereco": "Trecho de Jesus, 18, Marçola, 23212-066 Costa das Flores / PR",
+      "telefone": "+55 (081) 5346 3245",
+      "email": "diasalexia@example.org",
+      "createdAt": "2025-03-24T23:59:40.592775"
+    },
+    {
+      "id": 15,
+      "nome": "Daniel Cavalcante",
+      "cpf": "547.890.236-56",
+      "endereco": "Setor de Nunes, 419, Ernesto Nascimento, 88632-950 Duarte / PA",
+      "telefone": "+55 (061) 2147-4393",
+      "email": "salesleandro@example.com",
+      "createdAt": "2025-02-09T04:45:36.773334"
+    },
+    {
+      "id": 16,
+      "nome": "Melissa Souza",
+      "cpf": "067.854.912-58",
+      "endereco": "Vila Benjamin Montenegro, 71, Manacas, 10569886 Montenegro / PR",
+      "telefone": "11 4214 0084",
+      "email": "joao-vitorcastro@example.org",
+      "createdAt": "2025-07-14T20:53:06.425672"
+    },
+    {
+      "id": 17,
+      "nome": "Daniela da Conceição",
+      "cpf": "543.617.089-75",
+      "endereco": "Esplanada Calebe Fernandes, 96, Sagrada Família, 03573453 Alves / BA",
+      "telefone": "+55 51 0840 1835",
+      "email": "ucasa-grande@example.net",
+      "createdAt": "2025-05-05T12:28:39.596206"
+    },
+    {
+      "id": 18,
+      "nome": "Alexia da Cunha",
+      "cpf": "048.271.563-44",
+      "endereco": "Lagoa Vitor Gabriel Casa Grande, 34, Sagrada Família, 99649-555 Abreu Paulista / MG",
+      "telefone": "0800 182 9983",
+      "email": "eduarte@example.net",
+      "createdAt": "2024-11-15T09:47:38.461475"
+    },
+    {
+      "id": 19,
+      "nome": "Maria Fernanda Novais",
+      "cpf": "329.614.085-98",
+      "endereco": "Lago de Siqueira, Monte São José, 42415-782 Porto / PA",
+      "telefone": "+55 (081) 9145-2190",
+      "email": "ana-vitoria08@example.org",
+      "createdAt": "2025-01-05T12:40:52.547693"
+    },
+    {
+      "id": 20,
+      "nome": "Marcelo Fogaça",
+      "cpf": "597.182.463-55",
+      "endereco": "Rodovia Alice Ramos, Grajaú, 05572009 Moraes / SP",
+      "telefone": "+55 (061) 1834 7205",
+      "email": "luiz-felipe95@example.net",
+      "createdAt": "2024-09-27T19:57:29.816368"
+    },
+    {
+      "id": 21,
+      "nome": "Nicolas Cavalcante",
+      "cpf": "308.597.462-83",
+      "endereco": "Residencial Emanuelly Mendes, 87, Vila Jardim Alvorada, 77097-444 Cirino Verde / SE",
+      "telefone": "+55 (031) 7191-4099",
+      "email": "omoura@example.org",
+      "createdAt": "2025-04-15T21:52:41.972045"
+    },
+    {
+      "id": 22,
+      "nome": "Dr. Breno Pinto",
+      "cpf": "265.917.840-20",
+      "endereco": "Residencial de das Neves, Pilar, 19183468 Albuquerque da Serra / RO",
+      "telefone": "+55 11 9315 0392",
+      "email": "davi-lucca10@example.net",
+      "createdAt": "2025-07-21T04:13:30.457024"
+    },
+    {
+      "id": 23,
+      "nome": "Marina Cirino",
+      "cpf": "480.617.259-67",
+      "endereco": "Viaduto Nina Sales, 22, Palmares, 23223597 da Rosa do Amparo / AP",
+      "telefone": "21 0466 6426",
+      "email": "calebda-mata@example.org",
+      "createdAt": "2025-05-23T09:34:13.205332"
     }
   ],
   "produtos": [
@@ -33,7 +204,7 @@
       "id": 1,
       "nome": "Caneta Azul",
       "codigo": "CAN001",
-      "preco": 2.50,
+      "preco": 2.5,
       "categoria": "Escritório",
       "descricao": "Caneta esferográfica azul",
       "createdAt": "2024-01-10T09:15:00Z"
@@ -42,7 +213,7 @@
       "id": 2,
       "nome": "Caderno Universitário",
       "codigo": "CAD001",
-      "preco": 15.90,
+      "preco": 15.9,
       "categoria": "Papelaria",
       "descricao": "Caderno 96 folhas",
       "createdAt": "2024-01-11T11:45:00Z"
@@ -55,50 +226,144 @@
       "categoria": "Escritório",
       "descricao": "Lápis grafite HB",
       "createdAt": "2024-01-12T16:30:00Z"
+    },
+    {
+      "id": 4,
+      "nome": "Produto 4",
+      "codigo": "PROD004",
+      "preco": 31.81,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 4",
+      "createdAt": "2024-01-13T08:00:00Z"
+    },
+    {
+      "id": 5,
+      "nome": "Produto 5",
+      "codigo": "PROD005",
+      "preco": 27.55,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 5",
+      "createdAt": "2024-01-14T09:00:00Z"
+    },
+    {
+      "id": 6,
+      "nome": "Produto 6",
+      "codigo": "PROD006",
+      "preco": 30.01,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 6",
+      "createdAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": 7,
+      "nome": "Produto 7",
+      "codigo": "PROD007",
+      "preco": 15.53,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 7",
+      "createdAt": "2024-01-16T11:00:00Z"
+    },
+    {
+      "id": 8,
+      "nome": "Produto 8",
+      "codigo": "PROD008",
+      "preco": 16.22,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 8",
+      "createdAt": "2024-01-17T12:00:00Z"
+    },
+    {
+      "id": 9,
+      "nome": "Produto 9",
+      "codigo": "PROD009",
+      "preco": 15.35,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 9",
+      "createdAt": "2024-01-18T13:00:00Z"
+    },
+    {
+      "id": 10,
+      "nome": "Produto 10",
+      "codigo": "PROD010",
+      "preco": 16.01,
+      "categoria": "Geral",
+      "descricao": "Produto genérico 10",
+      "createdAt": "2024-01-19T14:00:00Z"
     }
   ],
   "estoque": [
     {
       "id": 1,
       "produtoId": 1,
-      "quantidade": 50,
-      "quantidadeMinima": 10,
-      "ultimaAtualizacao": "2024-01-15T08:00:00Z"
+      "quantidade": 73,
+      "quantidadeMinima": 7,
+      "ultimaAtualizacao": "2025-03-13T22:38:13.576156"
     },
     {
       "id": 2,
       "produtoId": 2,
-      "quantidade": 25,
-      "quantidadeMinima": 5,
-      "ultimaAtualizacao": "2024-01-16T10:15:00Z"
+      "quantidade": 253,
+      "quantidadeMinima": 43,
+      "ultimaAtualizacao": "2025-09-03T22:38:13.576165"
     },
     {
       "id": 3,
       "produtoId": 3,
-      "quantidade": 100,
-      "quantidadeMinima": 20,
-      "ultimaAtualizacao": "2024-01-17T07:30:00Z"
+      "quantidade": 67,
+      "quantidadeMinima": 49,
+      "ultimaAtualizacao": "2025-05-22T22:38:13.576170"
+    },
+    {
+      "id": 4,
+      "produtoId": 4,
+      "quantidade": 154,
+      "quantidadeMinima": 10,
+      "ultimaAtualizacao": "2025-07-11T22:38:13.576175"
+    },
+    {
+      "id": 5,
+      "produtoId": 5,
+      "quantidade": 158,
+      "quantidadeMinima": 11,
+      "ultimaAtualizacao": "2025-06-30T22:38:13.576178"
+    },
+    {
+      "id": 6,
+      "produtoId": 6,
+      "quantidade": 190,
+      "quantidadeMinima": 28,
+      "ultimaAtualizacao": "2025-06-05T22:38:13.576182"
+    },
+    {
+      "id": 7,
+      "produtoId": 7,
+      "quantidade": 145,
+      "quantidadeMinima": 6,
+      "ultimaAtualizacao": "2025-03-26T22:38:13.576186"
+    },
+    {
+      "id": 8,
+      "produtoId": 8,
+      "quantidade": 47,
+      "quantidadeMinima": 50,
+      "ultimaAtualizacao": "2025-07-19T22:38:13.576190"
+    },
+    {
+      "id": 9,
+      "produtoId": 9,
+      "quantidade": 95,
+      "quantidadeMinima": 26,
+      "ultimaAtualizacao": "2025-08-10T22:38:13.576193"
+    },
+    {
+      "id": 10,
+      "produtoId": 10,
+      "quantidade": 82,
+      "quantidadeMinima": 14,
+      "ultimaAtualizacao": "2025-04-18T22:38:13.576196"
     }
   ],
   "vendas": [
-    {
-      "id": 1,
-      "clienteId": 1,
-      "itens": [
-        {
-          "produtoId": 1,
-          "quantidade": 2,
-          "precoUnitario": 2.50
-        },
-        {
-          "produtoId": 2,
-          "quantidade": 1,
-          "precoUnitario": 15.90
-        }
-      ],
-      "total": 20.90,
-      "data": "2024-01-18T14:30:00Z"
-    },
     {
       "id": 2,
       "clienteId": 2,
@@ -111,6 +376,356 @@
       ],
       "total": 6.25,
       "data": "2024-01-19T16:45:00Z"
+    },
+    {
+      "id": 3,
+      "clienteId": 4,
+      "itens": [
+        {
+          "produtoId": 4,
+          "quantidade": 5,
+          "precoUnitario": 31.81
+        }
+      ],
+      "total": 92.57,
+      "data": "2025-03-24T22:38:13.575928"
+    },
+    {
+      "id": 4,
+      "clienteId": 5,
+      "itens": [
+        {
+          "produtoId": 10,
+          "quantidade": 3,
+          "precoUnitario": 16.01
+        }
+      ],
+      "total": 58.62,
+      "data": "2024-12-09T22:38:13.575942"
+    },
+    {
+      "id": 5,
+      "clienteId": 6,
+      "itens": [
+        {
+          "produtoId": 10,
+          "quantidade": 5,
+          "precoUnitario": 31.28
+        },
+        {
+          "produtoId": 7,
+          "quantidade": 5,
+          "precoUnitario": 15.53
+        },
+        {
+          "produtoId": 5,
+          "quantidade": 5,
+          "precoUnitario": 27.55
+        }
+      ],
+      "total": 21.2,
+      "data": "2025-01-30T22:38:13.575949"
+    },
+    {
+      "id": 6,
+      "clienteId": 7,
+      "itens": [
+        {
+          "produtoId": 7,
+          "quantidade": 5,
+          "precoUnitario": 13.65
+        },
+        {
+          "produtoId": 8,
+          "quantidade": 1,
+          "precoUnitario": 16.22
+        }
+      ],
+      "total": 99.91,
+      "data": "2024-09-13T22:38:13.575954"
+    },
+    {
+      "id": 7,
+      "clienteId": 8,
+      "itens": [
+        {
+          "produtoId": 2,
+          "quantidade": 4,
+          "precoUnitario": 40.69
+        }
+      ],
+      "total": 59.23,
+      "data": "2025-03-29T22:38:13.575958"
+    },
+    {
+      "id": 8,
+      "clienteId": 9,
+      "itens": [
+        {
+          "produtoId": 8,
+          "quantidade": 3,
+          "precoUnitario": 8.91
+        },
+        {
+          "produtoId": 9,
+          "quantidade": 1,
+          "precoUnitario": 15.35
+        }
+      ],
+      "total": 23.71,
+      "data": "2024-09-12T22:38:13.575962"
+    },
+    {
+      "id": 9,
+      "clienteId": 10,
+      "itens": [
+        {
+          "produtoId": 6,
+          "quantidade": 4,
+          "precoUnitario": 30.01
+        },
+        {
+          "produtoId": 9,
+          "quantidade": 5,
+          "precoUnitario": 36.32
+        }
+      ],
+      "total": 15.18,
+      "data": "2024-12-02T22:38:13.575967"
+    },
+    {
+      "id": 10,
+      "clienteId": 11,
+      "itens": [
+        {
+          "produtoId": 6,
+          "quantidade": 5,
+          "precoUnitario": 30.9
+        },
+        {
+          "produtoId": 8,
+          "quantidade": 1,
+          "precoUnitario": 39.47
+        }
+      ],
+      "total": 85.61,
+      "data": "2025-07-25T22:38:13.575970"
+    },
+    {
+      "id": 11,
+      "clienteId": 12,
+      "itens": [
+        {
+          "produtoId": 5,
+          "quantidade": 3,
+          "precoUnitario": 4.59
+        },
+        {
+          "produtoId": 6,
+          "quantidade": 5,
+          "precoUnitario": 38.73
+        },
+        {
+          "produtoId": 8,
+          "quantidade": 5,
+          "precoUnitario": 2.44
+        }
+      ],
+      "total": 40.22,
+      "data": "2025-04-29T22:38:13.575974"
+    },
+    {
+      "id": 12,
+      "clienteId": 13,
+      "itens": [
+        {
+          "produtoId": 9,
+          "quantidade": 5,
+          "precoUnitario": 40.01
+        },
+        {
+          "produtoId": 1,
+          "quantidade": 3,
+          "precoUnitario": 25.9
+        },
+        {
+          "produtoId": 6,
+          "quantidade": 1,
+          "precoUnitario": 22.57
+        }
+      ],
+      "total": 61.89,
+      "data": "2025-02-25T22:38:13.575978"
+    },
+    {
+      "id": 13,
+      "clienteId": 14,
+      "itens": [
+        {
+          "produtoId": 1,
+          "quantidade": 1,
+          "precoUnitario": 30.15
+        }
+      ],
+      "total": 59.91,
+      "data": "2025-03-17T22:38:13.575982"
+    },
+    {
+      "id": 14,
+      "clienteId": 15,
+      "itens": [
+        {
+          "produtoId": 9,
+          "quantidade": 4,
+          "precoUnitario": 13.71
+        },
+        {
+          "produtoId": 6,
+          "quantidade": 5,
+          "precoUnitario": 11.31
+        }
+      ],
+      "total": 56.62,
+      "data": "2024-09-22T22:38:13.575986"
+    },
+    {
+      "id": 15,
+      "clienteId": 16,
+      "itens": [
+        {
+          "produtoId": 1,
+          "quantidade": 3,
+          "precoUnitario": 47.91
+        }
+      ],
+      "total": 15.82,
+      "data": "2025-03-21T22:38:13.575989"
+    },
+    {
+      "id": 16,
+      "clienteId": 17,
+      "itens": [
+        {
+          "produtoId": 2,
+          "quantidade": 4,
+          "precoUnitario": 32.89
+        },
+        {
+          "produtoId": 9,
+          "quantidade": 1,
+          "precoUnitario": 3.07
+        },
+        {
+          "produtoId": 3,
+          "quantidade": 3,
+          "precoUnitario": 33.8
+        }
+      ],
+      "total": 45.68,
+      "data": "2025-07-19T22:38:13.575993"
+    },
+    {
+      "id": 17,
+      "clienteId": 18,
+      "itens": [
+        {
+          "produtoId": 10,
+          "quantidade": 1,
+          "precoUnitario": 39.92
+        },
+        {
+          "produtoId": 1,
+          "quantidade": 5,
+          "precoUnitario": 31.23
+        },
+        {
+          "produtoId": 5,
+          "quantidade": 3,
+          "precoUnitario": 3.23
+        }
+      ],
+      "total": 99.61,
+      "data": "2024-12-25T22:38:13.575997"
+    },
+    {
+      "id": 18,
+      "clienteId": 19,
+      "itens": [
+        {
+          "produtoId": 2,
+          "quantidade": 5,
+          "precoUnitario": 1.88
+        }
+      ],
+      "total": 17.55,
+      "data": "2025-05-06T22:38:13.576000"
+    },
+    {
+      "id": 19,
+      "clienteId": 20,
+      "itens": [
+        {
+          "produtoId": 10,
+          "quantidade": 2,
+          "precoUnitario": 45.95
+        }
+      ],
+      "total": 77.12,
+      "data": "2024-11-29T22:38:13.576004"
+    },
+    {
+      "id": 20,
+      "clienteId": 21,
+      "itens": [
+        {
+          "produtoId": 7,
+          "quantidade": 1,
+          "precoUnitario": 19.16
+        },
+        {
+          "produtoId": 4,
+          "quantidade": 5,
+          "precoUnitario": 49.73
+        }
+      ],
+      "total": 83.97,
+      "data": "2024-09-13T22:38:13.576008"
+    },
+    {
+      "id": 21,
+      "clienteId": 22,
+      "itens": [
+        {
+          "produtoId": 10,
+          "quantidade": 2,
+          "precoUnitario": 41.01
+        }
+      ],
+      "total": 41.93,
+      "data": "2025-08-18T22:38:13.576011"
+    },
+    {
+      "id": 22,
+      "clienteId": 23,
+      "itens": [
+        {
+          "produtoId": 1,
+          "quantidade": 3,
+          "precoUnitario": 26.1
+        },
+        {
+          "produtoId": 3,
+          "quantidade": 4,
+          "precoUnitario": 37.47
+        },
+        {
+          "produtoId": 10,
+          "quantidade": 5,
+          "precoUnitario": 4.88
+        }
+      ],
+      "total": 91.03,
+      "data": "2025-02-15T22:38:13.576015"
     }
   ]
 }
