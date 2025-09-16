@@ -107,7 +107,7 @@ const ClienteImportModal: React.FC<ClienteImportModalProps> = ({
     }
 
     importClientes(
-      () => clientesAPI.importar(filePath.trim()),
+      () => clientesAPI.importar(filePath),
       undefined,
       {
         successMessage: 'Clientes importados com sucesso!',
