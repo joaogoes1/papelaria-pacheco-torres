@@ -130,4 +130,21 @@ export const authAPI = {
     api.post<{ token: string }>('/login', credentials),
 };
 
+// Forecast - Machine Learning predictions
+export const forecastAPI = {
+  autoForecast: (daysAhead: number, modelType: string) =>
+    api.get(`/forecast/auto-forecast`, {
+      params: { daysAhead, modelType },
+      timeout: 60000, // 60 seconds for ML processing
+    }),
+  train: (salesData: any[], modelType: string) =>
+    api.post('/forecast/train', { salesData, modelType }, { timeout: 60000 }),
+  predict: (daysAhead: number, modelType: string, confidenceInterval: number) =>
+    api.post('/forecast/predict', { daysAhead, modelType, confidenceInterval }),
+  evaluate: (salesData: any[], testSize: number, modelType: string) =>
+    api.post('/forecast/evaluate', { salesData, testSize, modelType }),
+  compareModels: (salesData: any[], models: string[]) =>
+    api.post('/forecast/compare', { salesData, models }),
+};
+
 export default api;

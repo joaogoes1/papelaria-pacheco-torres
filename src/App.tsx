@@ -16,6 +16,7 @@ import EstoqueList from './components/Estoque/EstoqueList';
 import VendasList from './components/Vendas/VendasList';
 import Relatorios from './components/Relatorios/Relatorios';
 import Login from './components/Login/Login';
+import SalesForecast from './components/Forecast/SalesForecast';
 
 const AppWrapper = styled.div`
   min-height: 100vh;
@@ -100,6 +101,16 @@ const App: React.FC = () => {
                 <ProtectedRoute>
                   <Container>
                     <Relatorios />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/previsao"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <SalesForecast />
                   </Container>
                 </ProtectedRoute>
               }

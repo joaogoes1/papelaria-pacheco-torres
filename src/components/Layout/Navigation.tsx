@@ -7,7 +7,8 @@ import {
   Warehouse,
   ShoppingCart,
   BarChart3,
-  Home
+  Home,
+  Brain
 } from 'lucide-react';
 
 const Navigation: React.FC = () => {
@@ -18,6 +19,7 @@ const Navigation: React.FC = () => {
     { id: 'produtos', path: '/produtos', label: 'Produtos', icon: Package },
     { id: 'estoque', path: '/estoque', label: 'Estoque', icon: Warehouse },
     { id: 'vendas', path: '/vendas', label: 'Vendas', icon: ShoppingCart },
+    { id: 'previsao', path: '/previsao', label: 'Previsão IA', icon: Brain },
     { id: 'relatorios', path: '/relatorios', label: 'Relatórios', icon: BarChart3 },
   ];
 
