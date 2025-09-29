@@ -1,61 +1,14 @@
 import React from 'react';
-import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  Users, 
-  Package, 
-  Warehouse, 
-  ShoppingCart, 
+import { useLocation } from 'react-router-dom';
+import { NavWrapper, NavItem, NavGroup, NavTitle } from '../../styles/components';
+import {
+  Users,
+  Package,
+  Warehouse,
+  ShoppingCart,
   BarChart3,
-  Home 
+  Home
 } from 'lucide-react';
-
-const NavWrapper = styled.nav`
-  background: white;
-  border-right: 1px solid #f0f0f0;
-  width: 250px;
-  height: calc(100vh - 73px);
-  position: fixed;
-  left: 0;
-  top: 73px;
-  padding: 24px 0;
-  overflow-y: auto;
-`;
-
-const NavItem = styled(Link)<{ active?: boolean }>`
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 12px 24px;
-  border: none;
-  background: ${({ active }) => active ? '#f0f8ff' : 'transparent'};
-  color: ${({ active }) => active ? '#007aff' : '#1d1d1f'};
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-align: left;
-  text-decoration: none;
-
-  &:hover {
-    background: #f8f9fa;
-    color: #007aff;
-  }
-`;
-
-const NavGroup = styled.div`
-  margin-bottom: 24px;
-`;
-
-const NavTitle = styled.div`
-  padding: 0 24px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #86868b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-`;
 
 const Navigation: React.FC = () => {
   const location = useLocation();

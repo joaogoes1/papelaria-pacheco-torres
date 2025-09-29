@@ -1,83 +1,209 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { useApiMutation } from '../../hooks/useApi';
-import { authAPI } from '../../services/api';
-import { Card, Button, Input } from '../../styles/GlobalStyles';
-import { toast } from 'react-toastify';
+import { AlertCircle, Eye, EyeOff, Loader, Lock, ShoppingBag, User } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-const LoginWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f5f5f7;
-`;
-
-const LoginCard = styled(Card)`
-  width: 400px;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 8px;
-`;
+import { useAuth } from '../../contexts/AuthContext';
+import {
+  ErrorMessage,
+  ForgotPassword,
+  FormField,
+  InputIcon,
+  InputLabel,
+  InputWrapper,
+  LoginButton,
+  LoginCard,
+  LoginContainer,
+  LoginFooter,
+  LoginForm,
+  LoginHeader,
+  LoginLogo,
+  LoginSubtitle,
+  LoginTitle,
+  PasswordToggle,
+  RememberForgotRow,
+  RememberMe,
+  SignupLink,
+  StyledInput
+} from '../../styles/components';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { mutate: login, loading } = useApiMutation();
   const navigate = useNavigate();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await login(
-      () => authAPI.login({ username, password }),
-      {},
-      {
-        onSuccess: (data: any) => {
-          localStorage.setItem('token', data.token);
-          toast.success('Login bem-sucedido!');
-          navigate('/');
-        },
-      }
-    );
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated && !authLoading) {
+      navigate('/', { replace: true });
+    }
+  }, [isAuthenticated, authLoading, navigate]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
-  return (
-    <LoginWrapper>
-      <LoginCard>
-        <Title>Login</Title>
-        <form onSubmit={handleLogin}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Input
-              type="text"
-              placeholder="Usuário"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={loading}
-            />
-            <Input
-              type="password"
-              placeholder="Senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-            <Button type="submit" disabled={loading} style={{ width: '100%' }}>
-              {loading ? 'Entrando...' : 'Entrar'}
-            </Button>
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    // Validation
+    if (!formData.username.trim()) {
+      setError('Por favor, insira seu usuário');
+      return;
+    }
+
+    if (!formData.password) {
+      setError('Por favor, insira sua senha');
+      return;
+    }
+
+    if (formData.password.length < 3) {
+      setError('A senha deve ter no mínimo 3 caracteres');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      await login(formData.username, formData.password);
+      // Navigation is handled by AuthContext and useEffect above
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login. Tente novamente.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  // Show loading state during auth initialization
+  if (authLoading) {
+    return (
+      <LoginContainer>
+        <LoginCard>
+          <div style={{ textAlign: 'center', padding: '40px 0' }}>
+            <Loader size={32} style={{ animation: 'spin 1s linear infinite' }} />
+            <p style={{ marginTop: '16px', color: '#86868b' }}>Carregando...</p>
           </div>
-        </form>
+        </LoginCard>
+      </LoginContainer>
+    );
+  }
+
+  return (
+    <LoginContainer>
+      <LoginCard>
+        <LoginHeader>
+          <LoginLogo>
+            <ShoppingBag size={40} />
+          </LoginLogo>
+          <LoginTitle>Bem-vindo de volta</LoginTitle>
+          <LoginSubtitle>Faça login para acessar o sistema</LoginSubtitle>
+        </LoginHeader>
+
+        <LoginForm onSubmit={handleSubmit}>
+          <FormField>
+            <InputLabel htmlFor="username">Usuário</InputLabel>
+            <InputWrapper>
+              <InputIcon>
+                <User size={20} />
+              </InputIcon>
+              <StyledInput
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Digite seu usuário"
+                value={formData.username}
+                onChange={handleChange}
+                disabled={isLoading}
+                autoComplete="username"
+                autoFocus
+              />
+            </InputWrapper>
+          </FormField>
+
+          <FormField>
+            <InputLabel htmlFor="password">Senha</InputLabel>
+            <InputWrapper>
+              <InputIcon>
+                <Lock size={20} />
+              </InputIcon>
+              <StyledInput
+                id="password"
+                name="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Digite sua senha"
+                value={formData.password}
+                onChange={handleChange}
+                disabled={isLoading}
+                autoComplete="current-password"
+              />
+              <PasswordToggle
+                type="button"
+                onClick={togglePasswordVisibility}
+                disabled={isLoading}
+                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </PasswordToggle>
+            </InputWrapper>
+          </FormField>
+
+          {error && (
+            <ErrorMessage>
+              <AlertCircle size={18} />
+              <span>{error}</span>
+            </ErrorMessage>
+          )}
+
+          <RememberForgotRow>
+            <RememberMe>
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                disabled={isLoading}
+              />
+              <span>Lembrar-me</span>
+            </RememberMe>
+            <ForgotPassword href="#" onClick={(e) => e.preventDefault()}>
+              Esqueceu a senha?
+            </ForgotPassword>
+          </RememberForgotRow>
+
+          <LoginButton type="submit" disabled={isLoading} $isLoading={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader size={20} />
+                <span>Entrando...</span>
+              </>
+            ) : (
+              <span>Entrar</span>
+            )}
+          </LoginButton>
+        </LoginForm>
+
+        <LoginFooter>
+          Não tem uma conta?{' '}
+          <SignupLink href="#" onClick={(e) => e.preventDefault()}>
+            Cadastre-se
+          </SignupLink>
+        </LoginFooter>
       </LoginCard>
-    </LoginWrapper>
+    </LoginContainer>
   );
 };
 
-export default Login; 
+export default Login;

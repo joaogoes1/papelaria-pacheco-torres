@@ -1,10 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalStyles, Container } from './styles/GlobalStyles';
+import { AuthProvider } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Header from './components/Layout/Header';
 import Navigation from './components/Layout/Navigation';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -20,34 +22,92 @@ const AppWrapper = styled.div`
   background: #fafafa;
 `;
 
-const MainContent = styled.main<{ isLogin: boolean }>`
-  margin-left: ${({ isLogin }) => (isLogin ? '0' : '250px')};
-  padding: 32px;
-  min-height: calc(100vh - 73px);
+const MainContent = styled.main<{ $isLogin: boolean }>`
+  margin-left: ${({ $isLogin }) => ($isLogin ? '0' : '250px')};
+  padding: ${({ $isLogin }) => ($isLogin ? '0' : '32px')};
+  min-height: ${({ $isLogin }) => ($isLogin ? '100vh' : 'calc(100vh - 73px)')};
 `;
 
-const AppContent: React.FC = () => {
+const App: React.FC = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
 
   return (
-    <>
+    <AuthProvider>
       <GlobalStyles />
       <AppWrapper>
         {!isLoginPage && <Header />}
         {!isLoginPage && <Navigation />}
-        <MainContent isLogin={isLoginPage}>
-          <Container>
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/clientes" element={<ClientesList />} />
-              <Route path="/produtos" element={<ProdutosList />} />
-              <Route path="/estoque" element={<EstoqueList />} />
-              <Route path="/vendas" element={<VendasList />} />
-              <Route path="/relatorios" element={<Relatorios />} />
-            </Routes>
-          </Container>
+        <MainContent $isLogin={isLoginPage}>
+          <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<Login />} />
+
+            {/* Protected Routes */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <Dashboard />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/clientes"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <ClientesList />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/produtos"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <ProdutosList />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/estoque"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <EstoqueList />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/vendas"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <VendasList />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/relatorios"
+              element={
+                <ProtectedRoute>
+                  <Container>
+                    <Relatorios />
+                  </Container>
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Catch all - redirect to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </MainContent>
         <ToastContainer
           position="top-right"
@@ -62,12 +122,8 @@ const AppContent: React.FC = () => {
           theme="light"
         />
       </AppWrapper>
-    </>
+    </AuthProvider>
   );
-};
-
-const App: React.FC = () => {
-  return <AppContent />;
 };
 
 export default App;

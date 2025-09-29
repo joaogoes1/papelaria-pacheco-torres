@@ -1,50 +1,14 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { X, FileText } from 'lucide-react';
-import { Button } from '../../styles/GlobalStyles';
+import { Button, Modal as GlobalModal, ModalContent as GlobalModalContent } from '../../styles/GlobalStyles';
+import {
+  ModalHeader,
+  ModalTitle,
+  CloseButton,
+} from '../../styles/components';
 import { useApiMutation } from '../../hooks/useApi';
 import { clientesAPI } from '../../services/api';
-
-const ModalOverlay = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 500px;
-  position: relative;
-`;
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #86868b;
-`;
 
 const InputContainer = styled.div`
   margin-bottom: 16px;

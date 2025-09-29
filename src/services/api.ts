@@ -1,31 +1,65 @@
 import axios from 'axios';
 import { Cliente, Produto, Estoque, Venda } from '../types';
+import { getStoredToken, clearAuth } from '../contexts/AuthContext';
+import { toast } from 'react-toastify';
 
 const api = axios.create({
   baseURL: 'http://localhost:8080',
   timeout: 10000,
-  headers: {
-      "Authorizations": `Bearer ${localStorage.getItem('token')}`
-  }
 });
 
-// Interceptor para tratamento de erros
-api.interceptors.response.use(
-  (response) => response,
+// Request interceptor - Add JWT token to all requests
+api.interceptors.request.use(
+  (config) => {
+    const token = getStoredToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
   (error) => {
-    console.error('Erro na API:', error);
     return Promise.reject(error);
   }
 );
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token')
-    if (token) {
-        config.headers.setAuthorization(`Bearer ${token}`)
+// Response interceptor - Handle errors globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('Erro na API:', error);
+
+    // Handle 401 Unauthorized - Token expired or invalid
+    if (error.response?.status === 401) {
+      const isLoginPage = window.location.pathname === '/login';
+
+      // Only clear auth and redirect if not already on login page
+      if (!isLoginPage) {
+        clearAuth();
+        toast.error('Sessão expirada. Faça login novamente.');
+
+        // Redirect to login
+        window.location.href = '/login';
+      }
     }
-    return config
-});
+
+    // Handle 403 Forbidden
+    if (error.response?.status === 403) {
+      toast.error('Você não tem permissão para acessar este recurso.');
+    }
+
+    // Handle 500 Internal Server Error
+    if (error.response?.status === 500) {
+      toast.error('Erro no servidor. Tente novamente mais tarde.');
+    }
+
+    // Handle network errors
+    if (!error.response) {
+      toast.error('Erro de conexão. Verifique sua internet.');
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 // Clientes
 export const clientesAPI = {
@@ -39,7 +73,7 @@ export const clientesAPI = {
   update: (id: number, cliente: Omit<Cliente, 'id' | 'createdAt'>) =>
     api.put<Cliente>(`/clientes/${id}`, cliente),
   delete: (id: number) => api.delete(`/clientes/${id}`),
-  exportar: () => api.get('/clientes/exportar'),
+  exportar: () => api.get('/relatorios/clientes/exportar'),
   importar: (filePath: string) => {
     return api.post('/clientes/importar', { filePath });
   },
@@ -72,7 +106,7 @@ export const estoqueAPI = {
       ultimaAtualizacao: new Date().toISOString(),
     }),
   delete: (id: number) => api.delete(`/estoque/${id}`),
-  exportar: () => api.get('/estoque/exportar'),
+  exportar: () => api.get('/relatorios/estoque/exportar'),
 };
 
 // Vendas
@@ -87,12 +121,13 @@ export const vendasAPI = {
   update: (id: number, venda: Omit<Venda, 'id'>) =>
     api.put<Venda>(`/vendas/${id}`, venda),
   delete: (id: number) => api.delete(`/vendas/${id}`),
-  exportar: () => api.get('/vendas/exportar'),
+  exportar: () => api.get('/relatorios/vendas/exportar'),
 };
 
-// Auth
+// Auth - Login endpoint doesn't need token
 export const authAPI = {
-  login: (credentials: {username: string, password: string}) => api.post('/login', credentials),
-}
+  login: (credentials: { username: string; password: string }) =>
+    api.post<{ token: string }>('/login', credentials),
+};
 
 export default api;

@@ -9,8 +9,24 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { Card } from "../../styles/GlobalStyles";
+import {
+  DashboardGrid,
+  StatsCard,
+  StatsIcon,
+  StatsContent,
+  StatsTitle,
+  StatsValue,
+  QuickActions,
+  ActionCard,
+  ActionIcon,
+  ActionTitle,
+  ActionDescription,
+  AlertsSection,
+  SectionTitle,
+  AlertCard,
+  ChartsGrid,
+  ChartCard,
+} from "../../styles/components";
 import {
   BinomialDistributionChart,
   NormalDistributionChart,
@@ -20,121 +36,6 @@ import {
   TopProductsChart,
 } from "../Charts";
 import { useDashboardStats, useDashboardCharts } from "../../hooks/useDashboardData";
-
-const DashboardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  margin-bottom: 32px;
-`;
-
-const StatsCard = styled(Card)`
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const StatsIcon = styled.div<{ color: string }>`
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: ${({ color }) => color};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-`;
-
-const StatsContent = styled.div`
-  flex: 1;
-`;
-
-const StatsTitle = styled.h3`
-  font-size: 14px;
-  color: #86868b;
-  margin-bottom: 4px;
-  font-weight: 500;
-`;
-
-const StatsValue = styled.div`
-  font-size: 24px;
-  font-weight: 600;
-  color: #1d1d1f;
-`;
-
-const QuickActions = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 32px;
-`;
-
-const ActionCard = styled(Card)`
-  padding: 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
-
-const ActionIcon = styled.div`
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  background: #f0f8ff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-  color: #007aff;
-`;
-
-const ActionTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 8px;
-`;
-
-const ActionDescription = styled.p`
-  font-size: 14px;
-  color: #86868b;
-  line-height: 1.4;
-`;
-
-const AlertsSection = styled.div`
-  margin-top: 32px;
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 16px;
-`;
-
-const AlertCard = styled(Card)`
-  padding: 16px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-left: 4px solid #ffa500;
-`;
-
-const ChartsGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 24px;
-  margin-top: 24px;
-`;
-const ChartCard = styled(Card)`
-  padding: 16px;
-`;
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();

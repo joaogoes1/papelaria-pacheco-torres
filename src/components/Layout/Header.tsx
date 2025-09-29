@@ -1,37 +1,46 @@
 import React from 'react';
-import styled from 'styled-components';
 import { Container } from '../../styles/GlobalStyles';
-import { ShoppingBag } from 'lucide-react';
+import { HeaderWrapper, HeaderContent, Logo, UserInfo } from '../../styles/components';
+import { ShoppingBag, LogOut, User } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import styled from 'styled-components';
 
-const HeaderWrapper = styled.header`
-  background: white;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 16px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  backdrop-filter: blur(20px);
-  background-color: rgba(255, 255, 255, 0.95);
-`;
-
-const HeaderContent = styled.div`
+const UserSection = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
 `;
 
-const Logo = styled.div`
+const UserName = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1d1d1f;
-`;
-
-const UserInfo = styled.div`
+  gap: 8px;
   font-size: 14px;
-  color: #86868b;
+  color: #1d1d1f;
+  font-weight: 500;
+`;
+
+const LogoutButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #e5e5e7;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1d1d1f;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f5f5f7;
+    border-color: #d2d2d7;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 `;
 
 interface HeaderProps {
@@ -39,6 +48,8 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ title = "Papelaria Pacheco Torres" }) => {
+  const { user, logout } = useAuth();
+
   return (
     <HeaderWrapper>
       <Container>
@@ -47,9 +58,18 @@ const Header: React.FC<HeaderProps> = ({ title = "Papelaria Pacheco Torres" }) =
             <ShoppingBag size={24} color="#007aff" />
             {title}
           </Logo>
-          <UserInfo>
-            Sistema de Gestão
-          </UserInfo>
+          <UserSection>
+            {user && (
+              <UserName>
+                <User size={18} />
+                <span>{user.username}</span>
+              </UserName>
+            )}
+            <LogoutButton onClick={logout}>
+              <LogOut size={16} />
+              <span>Sair</span>
+            </LogoutButton>
+          </UserSection>
         </HeaderContent>
       </Container>
     </HeaderWrapper>

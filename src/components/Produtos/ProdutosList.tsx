@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { Search, Plus, Edit, Trash2, Package } from 'lucide-react';
 import {
   Card,
@@ -12,53 +11,18 @@ import {
   TableRow,
   SearchBar,
 } from '../../styles/GlobalStyles';
+import {
+  HeaderSection,
+  Title,
+  EmptyState,
+  EmptyIcon,
+  ActionButtons,
+  PriceCell,
+} from '../../styles/components';
 import { useApi, useApiMutation } from '../../hooks/useApi';
 import { produtosAPI } from '../../services/api';
 import { Produto } from '../../types';
 import ProdutoModal from './ProdutoModal';
-
-const HeaderSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-  color: #1d1d1f;
-  flex: 1;
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: 60px 20px;
-  color: #86868b;
-`;
-
-const EmptyIcon = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #f5f5f7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const PriceCell = styled(TableCell)`
-  font-weight: 600;
-  color: #34c759;
-`;
 
 const ProdutosList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');

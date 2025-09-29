@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { Search, Plus, Eye, Trash2, ShoppingCart } from 'lucide-react';
 import {
   Card,
@@ -11,54 +10,19 @@ import {
   TableRow,
   SearchBar,
 } from '../../styles/GlobalStyles';
+import {
+  HeaderSection,
+  Title,
+  EmptyState,
+  EmptyIcon,
+  ActionButtons,
+  TotalCell,
+} from '../../styles/components';
 import { useApi, useApiMutation } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI } from '../../services/api';
 import { Venda, Cliente, Produto } from '../../types';
 import VendaModal from './VendaModal';
 import VendaDetailsModal from './VendaDetailsModal';
-
-const HeaderSection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  gap: 16px;
-  flex-wrap: wrap;
-`;
-
-const Title = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
-  color: #1d1d1f;
-  flex: 1;
-`;
-
-const EmptyState = styled.div`
-  text-align: center;
-  padding: 60px 20px;
-  color: #86868b;
-`;
-
-const EmptyIcon = styled.div`
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #f5f5f7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 16px;
-`;
-
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
-
-const TotalCell = styled(TableCell)`
-  font-weight: 600;
-  color: #34c759;
-`;
 
 interface VendaWithDetails extends Venda {
   cliente?: Cliente;

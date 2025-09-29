@@ -12,43 +12,15 @@ import {
   Label,
   ErrorMessage,
 } from '../../styles/GlobalStyles';
+import {
+  ModalHeader,
+  ModalTitle,
+  CloseButton,
+  Form,
+} from '../../styles/components';
 import { useApi, useApiMutation } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
 import { ItemVenda } from '../../types';
-
-const ModalHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-`;
-
-const ModalTitle = styled.h2`
-  font-size: 20px;
-  font-weight: 600;
-  color: #1d1d1f;
-`;
-
-const CloseButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  color: #86868b;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: #f5f5f7;
-    color: #1d1d1f;
-  }
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
 
 const ItemsSection = styled.div`
   border: 1px solid #e5e5e7;
