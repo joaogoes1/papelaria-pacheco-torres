@@ -3,32 +3,25 @@ import {
   Package,
   Plus,
   ShoppingCart,
-  TrendingUp,
-  Users,
-  Warehouse,
-  Sparkles,
+  Warehouse
 } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useDashboardCharts, useDashboardStats } from "../../hooks/useDashboardData";
 import {
-  DashboardGrid,
-  StatsCard,
-  StatsIcon,
-  StatsContent,
-  StatsTitle,
-  StatsValue,
-  QuickActions,
   ActionCard,
+  ActionDescription,
   ActionIcon,
   ActionTitle,
-  ActionDescription,
-  AlertsSection,
-  SectionTitle,
   AlertCard,
-  ChartsGrid,
+  AlertsSection,
   ChartCard,
+  ChartsGrid,
+  QuickActions,
+  SectionTitle
 } from "../../styles/components";
+import { theme } from "../../styles/theme";
 import {
   BinomialDistributionChart,
   NormalDistributionChart,
@@ -37,16 +30,10 @@ import {
   StockStatusChart,
   TopProductsChart,
 } from "../Charts";
-import { useDashboardStats, useDashboardCharts } from "../../hooks/useDashboardData";
-import { theme } from "../../styles/theme";
 import {
-  MetricCardSkeleton,
-  MetricCardsSkeletonGrid,
-  QuickActionsSkeleton,
   ChartSkeleton,
-  ChartsSkeletonGrid,
+  ChartsSkeletonGrid
 } from "../Skeleton";
-import AnimatedCounter from "../AnimatedCounter";
 
 const HeroSection = styled.div`
   margin-bottom: ${theme.spacing[10]};
@@ -104,69 +91,10 @@ const Dashboard: React.FC = () => {
         </HeroSubtitle>
       </HeroSection>
 
-      {statsLoading ? (
-        <MetricCardsSkeletonGrid>
-          <MetricCardSkeleton />
-          <MetricCardSkeleton />
-          <MetricCardSkeleton />
-          <MetricCardSkeleton />
-        </MetricCardsSkeletonGrid>
-      ) : (
-        <DashboardGrid>
-        <StatsCard>
-          <StatsIcon color="#007aff">
-            <Users size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalClientes} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
-
-        <StatsCard>
-          <StatsIcon color="#34c759">
-            <Package size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalProdutos} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
-
-        <StatsCard>
-          <StatsIcon color="#ff9500">
-            <Warehouse size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Itens em Estoque</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalItensEstoque} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
-
-        <StatsCard>
-          <StatsIcon color="#af52de">
-            <TrendingUp size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>
-              R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
-      </DashboardGrid>
-      )}
+      
 
       <SectionTitle>Ações Rápidas</SectionTitle>
-      {statsLoading ? (
-        <QuickActionsSkeleton />
-      ) : (
+     
         <QuickActions>
         <ActionCard onClick={() => navigate("/clientes")}>
           <ActionIcon>
@@ -206,7 +134,7 @@ const Dashboard: React.FC = () => {
           <ActionDescription>Gerencie o estoque dos produtos</ActionDescription>
         </ActionCard>
       </QuickActions>
-      )}
+      
 
       <SectionTitle>Análise Estatística</SectionTitle>
       {chartsLoading ? (

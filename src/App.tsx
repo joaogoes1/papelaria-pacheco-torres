@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import PageTransition from './components/PageTransition';
 import Header from './components/Layout/Header';
 import Navigation from './components/Layout/Navigation';
+import Home from './components/Home/Home';
 import Dashboard from './components/Dashboard/Dashboard';
 import ClientesList from './components/Clientes/ClientesList';
 import ProdutosList from './components/Produtos/ProdutosList';
@@ -20,6 +21,19 @@ import VendasList from './components/Vendas/VendasList';
 import Relatorios from './components/Relatorios/Relatorios';
 import Login from './components/Login/Login';
 import SalesForecast from './components/Forecast/SalesForecast';
+
+// Page titles mapping
+const pageTitles: Record<string, string> = {
+  '/': 'Início',
+  '/login': 'Login',
+  '/dashboard': 'Dashboard',
+  '/clientes': 'Clientes',
+  '/produtos': 'Produtos',
+  '/estoque': 'Estoque',
+  '/vendas': 'Vendas',
+  '/previsao': 'Previsão de Vendas',
+  '/relatorios': 'Relatórios',
+};
 
 const AppWrapper = styled.div`
   min-height: 100vh;
@@ -46,6 +60,12 @@ const App: React.FC = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Update page title based on route
+  useEffect(() => {
+    const pageTitle = pageTitles[location.pathname] || 'Sistema';
+    document.title = `ERP - ${pageTitle}`;
+  }, [location.pathname]);
 
   const handleMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -90,6 +110,18 @@ const App: React.FC = () => {
                 {/* Protected Routes */}
                 <Route
                   path="/"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <Home />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
                   element={
                     <ProtectedRoute>
                       <PageTransition>

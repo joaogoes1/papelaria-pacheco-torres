@@ -20,8 +20,8 @@ const Content = styled(motion.div)`
   background: white;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
 `;

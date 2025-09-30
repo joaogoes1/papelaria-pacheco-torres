@@ -349,8 +349,8 @@ export const Modal = styled.div<{ isOpen: boolean }>`
 export const ModalContent = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 24px;
-  max-width: 500px;
+  padding: 32px;
+  max-width: 800px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;

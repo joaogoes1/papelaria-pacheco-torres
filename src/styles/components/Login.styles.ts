@@ -14,54 +14,93 @@ const fadeIn = keyframes`
 
 export const LoginContainer = styled.div`
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: ${theme.colors.background.primary};
-  padding: ${theme.spacing[6]};
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: ${theme.colors.white};
   position: relative;
   overflow: hidden;
 
-  /* Apple-style subtle gradient background */
+  @media (max-width: ${theme.breakpoints.lg}) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const LoginLeftPanel = styled.div`
+  background: linear-gradient(135deg, #007aff 0%, #5856d6 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: ${theme.spacing[16]};
+  color: white;
+  position: relative;
+  overflow: hidden;
+
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60vh;
-    background: linear-gradient(
-      180deg,
-      ${theme.colors.gray[50]} 0%,
-      ${theme.colors.background.primary} 100%
-    );
-    z-index: 0;
+    top: -50%;
+    right: -30%;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: float 25s ease-in-out infinite;
   }
 
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -40%;
+    left: -20%;
+    width: 500px;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    animation: float 20s ease-in-out infinite reverse;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-30px, -30px) rotate(180deg); }
+  }
+
+  @media (max-width: ${theme.breakpoints.lg}) {
+    display: none;
+  }
+`;
+
+export const LoginRightPanel = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${theme.spacing[10]};
+  background: ${theme.colors.gray[50]};
+
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: ${theme.spacing[4]};
+    padding: ${theme.spacing[6]};
   }
 `;
 
 export const LoginCard = styled.div`
   background: ${theme.colors.white};
-  border-radius: ${theme.borderRadius.xl};
-  box-shadow: ${theme.shadows.appleLg};
-  padding: ${theme.spacing[16]};
+  border-radius: ${theme.borderRadius['2xl']};
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  padding: ${theme.spacing[12]};
   width: 100%;
   max-width: 480px;
-  animation: ${fadeIn} 0.5s ${theme.transitions.appleEase};
+  animation: ${fadeIn} 0.6s ${theme.transitions.appleEase};
   position: relative;
-  z-index: 1;
   border: 1px solid ${theme.colors.gray[200]};
 
   @media (max-width: ${theme.breakpoints.md}) {
-    padding: ${theme.spacing[10]};
+    padding: ${theme.spacing[8]};
     max-width: 420px;
   }
 
   @media (max-width: ${theme.breakpoints.sm}) {
-    padding: ${theme.spacing[8]};
+    padding: ${theme.spacing[6]};
+    border-radius: ${theme.borderRadius.xl};
   }
 `;
 
@@ -336,5 +375,99 @@ export const DemoCredentials = styled.div`
     font-family: ${theme.typography.fontFamily.mono};
     color: ${theme.colors.blue.DEFAULT};
     font-size: ${theme.typography.fontSize.xs};
+  }
+`;
+
+export const BrandSection = styled.div`
+  text-align: center;
+  z-index: 1;
+  position: relative;
+`;
+
+export const BrandLogo = styled.div`
+  font-size: 64px;
+  margin-bottom: ${theme.spacing[6]};
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+`;
+
+export const BrandTitle = styled.h1`
+  font-size: 52px;
+  font-weight: 800;
+  margin-bottom: ${theme.spacing[6]};
+  color: #FFFFFF;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  position: relative;
+  display: inline-block;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.3) 100%);
+    border-radius: 2px;
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: 44px;
+  }
+`;
+
+export const BrandSubtitle = styled.p`
+  font-size: ${theme.typography.fontSize.xl};
+  color: #FFFFFF;
+  max-width: 400px;
+  margin: 0 auto ${theme.spacing[12]};
+  line-height: ${theme.typography.lineHeight.relaxed};
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+`;
+
+export const FeaturesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${theme.spacing[4]};
+  max-width: 400px;
+  margin: 0 auto;
+`;
+
+export const FeatureItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing[3]};
+  padding: ${theme.spacing[4]};
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: ${theme.borderRadius.lg};
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all ${theme.transitions.normal};
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(4px);
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: white;
+  }
+
+  div {
+    flex: 1;
+
+    strong {
+      display: block;
+      font-weight: ${theme.typography.fontWeight.semibold};
+      margin-bottom: 4px;
+      font-size: ${theme.typography.fontSize.base};
+    }
+
+    span {
+      font-size: ${theme.typography.fontSize.sm};
+      opacity: 0.9;
+    }
   }
 `;

@@ -23,8 +23,18 @@ import { ItemVenda } from '../../types';
 
 const ModalContentWrapper = styled.div`
   padding: 32px;
-  max-width: 700px;
+  min-width: 1000px;
+  max-width: 1200px;
   width: 100%;
+
+  @media (max-width: 1280px) {
+    min-width: 90vw;
+  }
+
+  @media (max-width: 768px) {
+    min-width: auto;
+    width: 100%;
+  }
 `;
 
 const ItemsSection = styled.div`

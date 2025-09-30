@@ -1,7 +1,8 @@
-import { AlertCircle, Eye, EyeOff, Loader, Lock, ShoppingBag, User } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, Loader, Lock, ShoppingBag, User, Shield, Zap, TrendingUp, BarChart3 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePageTitle } from '../../hooks/usePageTitle';
 import {
   ErrorMessage,
   ForgotPassword,
@@ -22,10 +23,19 @@ import {
   RememberForgotRow,
   RememberMe,
   SignupLink,
-  StyledInput
+  StyledInput,
+  LoginLeftPanel,
+  LoginRightPanel,
+  BrandSection,
+  BrandLogo,
+  BrandTitle,
+  BrandSubtitle,
+  FeaturesList,
+  FeatureItem
 } from '../../styles/components';
 
 const Login: React.FC = () => {
+  usePageTitle('Login');
   const navigate = useNavigate();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
@@ -92,116 +102,157 @@ const Login: React.FC = () => {
   if (authLoading) {
     return (
       <LoginContainer>
-        <LoginCard>
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Loader size={32} style={{ animation: 'spin 1s linear infinite' }} />
-            <p style={{ marginTop: '16px', color: '#86868b' }}>Carregando...</p>
-          </div>
-        </LoginCard>
+        <LoginRightPanel>
+          <LoginCard>
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Loader size={32} style={{ animation: 'spin 1s linear infinite' }} />
+              <p style={{ marginTop: '16px', color: '#86868b' }}>Carregando...</p>
+            </div>
+          </LoginCard>
+        </LoginRightPanel>
       </LoginContainer>
     );
   }
 
   return (
     <LoginContainer>
-      <LoginCard>
-        <LoginHeader>
-          <LoginLogo>
-            <ShoppingBag size={40} />
-          </LoginLogo>
-          <LoginTitle>Bem-vindo de volta</LoginTitle>
-          <LoginSubtitle>Faça login para acessar o sistema</LoginSubtitle>
-        </LoginHeader>
+      <LoginLeftPanel>
+        <BrandSection>
+          <BrandTitle>ERP de Gestão Empresarial</BrandTitle>
+          <BrandSubtitle>
+            Transforme dados em decisões estratégicas. Potencialize seu negócio com tecnologia de ponta e inteligência artificial.
+          </BrandSubtitle>
 
-        <LoginForm onSubmit={handleSubmit}>
-          <FormField>
-            <InputLabel htmlFor="username">Usuário</InputLabel>
-            <InputWrapper>
-              <InputIcon>
-                <User size={20} />
-              </InputIcon>
-              <StyledInput
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Digite seu usuário"
-                value={formData.username}
-                onChange={handleChange}
-                disabled={isLoading}
-                autoComplete="username"
-                autoFocus
-              />
-            </InputWrapper>
-          </FormField>
+          <FeaturesList>
+            <FeatureItem>
+              <TrendingUp size={24} />
+              <div>
+                <strong>Analytics em Tempo Real</strong>
+                <span>KPIs e métricas atualizadas instantaneamente</span>
+              </div>
+            </FeatureItem>
+            <FeatureItem>
+              <BarChart3 size={24} />
+              <div>
+                <strong>Inteligência Artificial</strong>
+                <span>Previsões de vendas com Machine Learning</span>
+              </div>
+            </FeatureItem>
+            <FeatureItem>
+              <Zap size={24} />
+              <div>
+                <strong>Automação Inteligente</strong>
+                <span>Processos otimizados e produtividade máxima</span>
+              </div>
+            </FeatureItem>
+            <FeatureItem>
+              <Shield size={24} />
+              <div>
+                <strong>Segurança Enterprise</strong>
+                <span>Criptografia e compliance garantidos</span>
+              </div>
+            </FeatureItem>
+          </FeaturesList>
+        </BrandSection>
+      </LoginLeftPanel>
 
-          <FormField>
-            <InputLabel htmlFor="password">Senha</InputLabel>
-            <InputWrapper>
-              <InputIcon>
-                <Lock size={20} />
-              </InputIcon>
-              <StyledInput
-                id="password"
-                name="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Digite sua senha"
-                value={formData.password}
-                onChange={handleChange}
-                disabled={isLoading}
-                autoComplete="current-password"
-              />
-              <PasswordToggle
-                type="button"
-                onClick={togglePasswordVisibility}
-                disabled={isLoading}
-                aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </PasswordToggle>
-            </InputWrapper>
-          </FormField>
+      <LoginRightPanel>
+        <LoginCard>
+          <LoginHeader>
+            <LoginTitle>Acesse sua Plataforma</LoginTitle>
+            <LoginSubtitle>Entre com suas credenciais para continuar</LoginSubtitle>
+          </LoginHeader>
 
-          {error && (
-            <ErrorMessage>
-              <AlertCircle size={18} />
-              <span>{error}</span>
-            </ErrorMessage>
-          )}
+          <LoginForm onSubmit={handleSubmit}>
+            <FormField>
+              <InputLabel htmlFor="username">Usuário</InputLabel>
+              <InputWrapper>
+                <InputIcon>
+                  <User size={20} />
+                </InputIcon>
+                <StyledInput
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="Digite seu usuário"
+                  value={formData.username}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  autoComplete="username"
+                  autoFocus
+                />
+              </InputWrapper>
+            </FormField>
 
-          <RememberForgotRow>
-            <RememberMe>
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                disabled={isLoading}
-              />
-              <span>Lembrar-me</span>
-            </RememberMe>
-            <ForgotPassword href="#" onClick={(e) => e.preventDefault()}>
-              Esqueceu a senha?
-            </ForgotPassword>
-          </RememberForgotRow>
+            <FormField>
+              <InputLabel htmlFor="password">Senha</InputLabel>
+              <InputWrapper>
+                <InputIcon>
+                  <Lock size={20} />
+                </InputIcon>
+                <StyledInput
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Digite sua senha"
+                  value={formData.password}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  autoComplete="current-password"
+                />
+                <PasswordToggle
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  disabled={isLoading}
+                  aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </PasswordToggle>
+              </InputWrapper>
+            </FormField>
 
-          <LoginButton type="submit" disabled={isLoading} $isLoading={isLoading}>
-            {isLoading ? (
-              <>
-                <Loader size={20} />
-                <span>Entrando...</span>
-              </>
-            ) : (
-              <span>Entrar</span>
+            {error && (
+              <ErrorMessage>
+                <AlertCircle size={18} />
+                <span>{error}</span>
+              </ErrorMessage>
             )}
-          </LoginButton>
-        </LoginForm>
 
-        <LoginFooter>
-          Não tem uma conta?{' '}
-          <SignupLink href="#" onClick={(e) => e.preventDefault()}>
-            Cadastre-se
-          </SignupLink>
-        </LoginFooter>
-      </LoginCard>
+            <RememberForgotRow>
+              <RememberMe>
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  disabled={isLoading}
+                />
+                <span>Lembrar-me</span>
+              </RememberMe>
+              <ForgotPassword href="#" onClick={(e) => e.preventDefault()}>
+                Esqueceu a senha?
+              </ForgotPassword>
+            </RememberForgotRow>
+
+            <LoginButton type="submit" disabled={isLoading} $isLoading={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader size={20} />
+                  <span>Entrando...</span>
+                </>
+              ) : (
+                <span>Entrar</span>
+              )}
+            </LoginButton>
+          </LoginForm>
+
+          <LoginFooter>
+            Não tem uma conta?{' '}
+            <SignupLink href="#" onClick={(e) => e.preventDefault()}>
+              Cadastre-se
+            </SignupLink>
+          </LoginFooter>
+        </LoginCard>
+      </LoginRightPanel>
     </LoginContainer>
   );
 };

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container } from '../../styles/GlobalStyles';
 import { HeaderWrapper, HeaderContent, Logo, UserInfo } from '../../styles/components';
-import { ShoppingBag, LogOut, User, Menu, X } from 'lucide-react';
+import { LogOut, User, Menu, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import styled from 'styled-components';
-
 import { theme } from '../../styles/theme';
 
 const MenuButton = styled.button`
@@ -30,6 +30,20 @@ const MenuButton = styled.button`
   @media (max-width: ${theme.breakpoints.lg}) {
     display: flex;
   }
+`;
+
+const LogoIcon = styled.div`
+  width: 32px;
+  height: 32px;
+  background: #007aff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  color: white;
+  flex-shrink: 0;
 `;
 
 const UserSection = styled.div`
@@ -103,6 +117,12 @@ const Header: React.FC<HeaderProps> = ({
   isMenuOpen = false
 }) => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <HeaderWrapper>
@@ -113,7 +133,7 @@ const Header: React.FC<HeaderProps> = ({
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </MenuButton>
             <Logo>
-              <ShoppingBag size={24} color="#007aff" />
+              <LogoIcon>E</LogoIcon>
               {title}
             </Logo>
           </div>
@@ -124,7 +144,7 @@ const Header: React.FC<HeaderProps> = ({
                 <span>{user.username}</span>
               </UserName>
             )}
-            <LogoutButton onClick={logout}>
+            <LogoutButton onClick={handleLogout}>
               <LogOut size={16} />
               <span>Sair</span>
             </LogoutButton>
