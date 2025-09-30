@@ -2,15 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import { X } from 'lucide-react';
 import {
-  Modal,
-  ModalContent,
   Button,
   Table,
   TableHeader,
   TableCell,
   TableRow,
 } from '../../styles/GlobalStyles';
+import AnimatedModal from '../AnimatedModal';
 import { Venda, Cliente, Produto } from '../../types';
+
+const ModalContentWrapper = styled.div`
+  padding: 32px;
+  max-width: 600px;
+  width: 100%;
+`;
 
 const ModalHeader = styled.div`
   display: flex;
@@ -112,8 +117,8 @@ const VendaDetailsModal: React.FC<VendaDetailsModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen}>
-      <ModalContent style={{ maxWidth: '600px' }}>
+    <AnimatedModal isOpen={isOpen} onClose={onClose}>
+      <ModalContentWrapper>
         <ModalHeader>
           <ModalTitle>Detalhes da Venda #{venda.id}</ModalTitle>
           <CloseButton onClick={onClose}>
@@ -180,8 +185,8 @@ const VendaDetailsModal: React.FC<VendaDetailsModalProps> = ({
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '24px' }}>
           <Button onClick={onClose}>Fechar</Button>
         </div>
-      </ModalContent>
-    </Modal>
+      </ModalContentWrapper>
+    </AnimatedModal>
   );
 };
 

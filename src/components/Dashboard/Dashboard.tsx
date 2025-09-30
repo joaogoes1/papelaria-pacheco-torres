@@ -46,6 +46,7 @@ import {
   ChartSkeleton,
   ChartsSkeletonGrid,
 } from "../Skeleton";
+import AnimatedCounter from "../AnimatedCounter";
 
 const HeroSection = styled.div`
   margin-bottom: ${theme.spacing[10]};
@@ -118,7 +119,9 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>{stats.totalClientes}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalClientes} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -128,7 +131,9 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>{stats.totalProdutos}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalProdutos} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -138,7 +143,9 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Itens em Estoque</StatsTitle>
-            <StatsValue>{stats.totalItensEstoque}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalItensEstoque} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -148,7 +155,9 @@ const Dashboard: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>R$ {stats.vendasHoje.toFixed(2)}</StatsValue>
+            <StatsValue>
+              R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
       </DashboardGrid>

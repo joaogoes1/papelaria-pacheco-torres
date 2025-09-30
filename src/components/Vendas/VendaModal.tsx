@@ -3,8 +3,6 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import styled from 'styled-components';
 import { X, Plus, Trash2 } from 'lucide-react';
 import {
-  Modal,
-  ModalContent,
   Button,
   Select,
   Input,
@@ -18,9 +16,16 @@ import {
   CloseButton,
   Form,
 } from '../../styles/components';
+import AnimatedModal from '../AnimatedModal';
 import { useApi, useApiMutation } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
 import { ItemVenda } from '../../types';
+
+const ModalContentWrapper = styled.div`
+  padding: 32px;
+  max-width: 700px;
+  width: 100%;
+`;
 
 const ItemsSection = styled.div`
   border: 1px solid #e5e5e7;
@@ -193,8 +198,8 @@ const VendaModal: React.FC<VendaModalProps> = ({
   };
 
   return (
-    <Modal isOpen={isOpen}>
-      <ModalContent style={{ maxWidth: '700px' }}>
+    <AnimatedModal isOpen={isOpen} onClose={onClose}>
+      <ModalContentWrapper>
         <ModalHeader>
           <ModalTitle>Nova Venda</ModalTitle>
           <CloseButton onClick={onClose}>
@@ -314,8 +319,8 @@ const VendaModal: React.FC<VendaModalProps> = ({
             </Button>
           </ButtonGroup>
         </Form>
-      </ModalContent>
-    </Modal>
+      </ModalContentWrapper>
+    </AnimatedModal>
   );
 };
 

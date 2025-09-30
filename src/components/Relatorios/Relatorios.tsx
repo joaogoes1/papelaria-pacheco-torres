@@ -6,6 +6,7 @@ import { useApi } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
 import { MetricCardSkeleton, Skeleton } from '../Skeleton';
 import { toast } from 'react-toastify';
+import { AnimatedCounter } from '../AnimatedCounter';
 
 const Title = styled.h1`
   font-size: 24px;
@@ -303,7 +304,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Faturamento Total</StatsTitle>
-            <StatsValue>R$ {stats.faturamentoTotal.toFixed(2).replace('.', ',')}</StatsValue>
+            <StatsValue>
+              R$ <AnimatedCounter value={stats.faturamentoTotal} decimals={2} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -313,7 +316,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Total de Vendas</StatsTitle>
-            <StatsValue>{stats.totalVendas}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalVendas} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -323,7 +328,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>R$ {stats.vendasHoje.toFixed(2).replace('.', ',')}</StatsValue>
+            <StatsValue>
+              R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -333,7 +340,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>{stats.totalClientes}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalClientes} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -343,7 +352,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>{stats.totalProdutos}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.totalProdutos} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
 
@@ -353,7 +364,9 @@ const Relatorios: React.FC = () => {
           </StatsIcon>
           <StatsContent>
             <StatsTitle>Produtos Baixo Estoque</StatsTitle>
-            <StatsValue>{stats.produtosBaixoEstoque}</StatsValue>
+            <StatsValue>
+              <AnimatedCounter value={stats.produtosBaixoEstoque} />
+            </StatsValue>
           </StatsContent>
         </StatsCard>
       </StatsGrid>
