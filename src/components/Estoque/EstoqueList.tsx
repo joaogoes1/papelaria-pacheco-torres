@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { Search, Package, Edit, AlertTriangle } from 'lucide-react';
 import {
   Card,
@@ -23,6 +24,36 @@ import { useApi, useApiMutation } from '../../hooks/useApi';
 import { estoqueAPI, produtosAPI } from '../../services/api';
 import { Estoque, Produto } from '../../types';
 import EstoqueModal from './EstoqueModal';
+import { theme } from '../../styles/theme';
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: ${theme.spacing[4]};
+`;
+
+const LoadingSpinner = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 4px solid ${theme.colors.gray[200]};
+  border-top-color: ${theme.colors.blue.DEFAULT};
+  border-radius: ${theme.borderRadius.full};
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  font-size: ${theme.typography.fontSize.lg};
+  color: ${theme.colors.text.secondary};
+`;
 
 interface EstoqueWithProduto extends Estoque {
   produto?: Produto;
@@ -89,7 +120,12 @@ const EstoqueList: React.FC = () => {
   };
 
   if (loadingEstoque || loadingProdutos) {
-    return <div>Carregando...</div>;
+    return (
+      <LoadingContainer>
+        <LoadingSpinner />
+        <LoadingText>Carregando estoque...</LoadingText>
+      </LoadingContainer>
+    );
   }
 
   return (

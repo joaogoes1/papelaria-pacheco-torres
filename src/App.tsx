@@ -1,10 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { GlobalStyles, Container } from './styles/GlobalStyles';
+import { theme } from './styles/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import Header from './components/Layout/Header';
@@ -20,26 +21,61 @@ import SalesForecast from './components/Forecast/SalesForecast';
 
 const AppWrapper = styled.div`
   min-height: 100vh;
-  background: #fafafa;
+  background: ${({ theme }) => theme.colors.background.secondary};
 `;
 
 const MainContent = styled.main<{ $isLogin: boolean }>`
   margin-left: ${({ $isLogin }) => ($isLogin ? '0' : '250px')};
   padding: ${({ $isLogin }) => ($isLogin ? '0' : '32px')};
   min-height: ${({ $isLogin }) => ($isLogin ? '100vh' : 'calc(100vh - 73px)')};
+  transition: margin-left ${({ theme }) => theme.transitions.normal};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+    margin-left: 0;
+    padding: ${({ $isLogin }) => ($isLogin ? '0' : '20px')};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: ${({ $isLogin }) => ($isLogin ? '0' : '16px')};
+  }
 `;
 
 const App: React.FC = () => {
   const location = useLocation();
   const isLoginPage = location.pathname === '/login';
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  // Close menu when route changes
+  React.useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
-    <AuthProvider>
-      <GlobalStyles />
-      <AppWrapper>
-        {!isLoginPage && <Header />}
-        {!isLoginPage && <Navigation />}
-        <MainContent $isLogin={isLoginPage}>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <GlobalStyles />
+        <AppWrapper>
+          {!isLoginPage && (
+            <Header
+              onMenuToggle={handleMenuToggle}
+              isMenuOpen={isMobileMenuOpen}
+            />
+          )}
+          {!isLoginPage && (
+            <Navigation
+              isOpen={isMobileMenuOpen}
+              onClose={handleMenuClose}
+            />
+          )}
+          <MainContent $isLogin={isLoginPage}>
           <Routes>
             {/* Public Route */}
             <Route path="/login" element={<Login />} />
@@ -132,8 +168,9 @@ const App: React.FC = () => {
           pauseOnHover
           theme="light"
         />
-      </AppWrapper>
-    </AuthProvider>
+        </AppWrapper>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

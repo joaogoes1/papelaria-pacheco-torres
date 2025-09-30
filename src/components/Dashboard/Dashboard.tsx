@@ -6,9 +6,11 @@ import {
   TrendingUp,
   Users,
   Warehouse,
+  Sparkles,
 } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import {
   DashboardGrid,
   StatsCard,
@@ -36,6 +38,78 @@ import {
   TopProductsChart,
 } from "../Charts";
 import { useDashboardStats, useDashboardCharts } from "../../hooks/useDashboardData";
+import { theme } from "../../styles/theme";
+
+const HeroSection = styled.div`
+  margin-bottom: ${theme.spacing[10]};
+  text-align: center;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    margin-bottom: ${theme.spacing[8]};
+  }
+`;
+
+const HeroTitle = styled.h1`
+  font-size: ${theme.typography.fontSize['7xl']};
+  font-weight: ${theme.typography.fontWeight.bold};
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing[4]};
+  letter-spacing: ${theme.typography.letterSpacing.tighter};
+  line-height: ${theme.typography.lineHeight.tight};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize['5xl']};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.typography.fontSize['4xl']};
+  }
+`;
+
+const HeroSubtitle = styled.p`
+  font-size: ${theme.typography.fontSize.xl};
+  color: ${theme.colors.text.secondary};
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: ${theme.typography.lineHeight.relaxed};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize.lg};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.typography.fontSize.base};
+  }
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: ${theme.spacing[4]};
+`;
+
+const LoadingSpinner = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 4px solid ${theme.colors.gray[200]};
+  border-top-color: ${theme.colors.blue.DEFAULT};
+  border-radius: ${theme.borderRadius.full};
+  animation: spin 1s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const LoadingText = styled.p`
+  font-size: ${theme.typography.fontSize.lg};
+  color: ${theme.colors.text.secondary};
+`;
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -44,14 +118,21 @@ const Dashboard: React.FC = () => {
 
   if (statsLoading || chartsLoading) {
     return (
-      <div style={{ textAlign: 'center', padding: '50px' }}>
-        <div>Carregando dados do dashboard...</div>
-      </div>
+      <LoadingContainer>
+        <LoadingSpinner />
+        <LoadingText>Carregando dados do dashboard...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
     <>
+      <HeroSection>
+        <HeroTitle>Dashboard</HeroTitle>
+        <HeroSubtitle>
+          Visão geral completa do seu negócio em tempo real
+        </HeroSubtitle>
+      </HeroSection>
       <DashboardGrid>
         <StatsCard>
           <StatsIcon color="#007aff">

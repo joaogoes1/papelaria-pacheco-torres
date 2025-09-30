@@ -11,71 +11,118 @@ import {
 import ReactECharts from 'echarts-for-react';
 import { forecastAPI } from '../../services/api';
 import { toast } from 'react-toastify';
+import { theme } from '../../styles/theme';
 
 const Container = styled.div`
-  padding: 20px 0;
+  padding: ${theme.spacing[6]} 0;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[4]} 0;
+  }
 `;
 
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: ${theme.spacing[8]};
+  gap: ${theme.spacing[4]};
+  flex-wrap: wrap;
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    margin-bottom: ${theme.spacing[6]};
+  }
 `;
 
 const Title = styled.h1`
-  font-size: 32px;
-  font-weight: 700;
-  color: #1d1d1f;
+  font-size: ${theme.typography.fontSize['5xl']};
+  font-weight: ${theme.typography.fontWeight.bold};
+  color: ${theme.colors.text.primary};
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: ${theme.spacing[3]};
+  letter-spacing: ${theme.typography.letterSpacing.tight};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize['3xl']};
+    gap: ${theme.spacing[2]};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    font-size: ${theme.typography.fontSize['2xl']};
+  }
 `;
 
 const Controls = styled.div`
   display: flex;
-  gap: 12px;
+  gap: ${theme.spacing[3]};
   align-items: center;
+  flex-wrap: wrap;
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    width: 100%;
+
+    select, button {
+      flex: 1;
+    }
+  }
 `;
 
 const Select = styled.select`
-  padding: 10px 16px;
-  border: 1px solid #d2d2d7;
-  border-radius: 8px;
-  font-size: 14px;
-  background: white;
+  padding: ${theme.spacing[3]} ${theme.spacing[4]};
+  border: 1px solid ${theme.colors.gray[300]};
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.typography.fontSize.sm};
+  font-family: ${theme.typography.fontFamily.primary};
+  background: ${theme.colors.white};
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all ${theme.transitions.fast};
 
   &:hover {
-    border-color: #007aff;
+    border-color: ${theme.colors.blue.DEFAULT};
   }
 
   &:focus {
     outline: none;
-    border-color: #007aff;
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+    border-color: ${theme.colors.blue.DEFAULT};
+    box-shadow: 0 0 0 4px ${theme.colors.blue.DEFAULT}15;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[2]} ${theme.spacing[3]};
   }
 `;
 
 const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
-  padding: 10px 20px;
+  padding: ${theme.spacing[3]} ${theme.spacing[5]};
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.typography.fontSize.sm};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  font-family: ${theme.typography.fontFamily.primary};
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
+  gap: ${theme.spacing[2]};
+  transition: all ${theme.transitions.normal};
   background: ${(props) =>
-    props.variant === 'secondary' ? '#f5f5f7' : '#007aff'};
-  color: ${(props) => (props.variant === 'secondary' ? '#1d1d1f' : 'white')};
+    props.variant === 'secondary' ? theme.colors.gray[100] : theme.colors.blue.DEFAULT};
+  color: ${(props) => (props.variant === 'secondary' ? theme.colors.text.primary : theme.colors.white)};
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: ${theme.shadows.lg};
+    background: ${(props) =>
+      props.variant === 'secondary' ? theme.colors.gray[200] : theme.colors.blue.dark};
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   &:disabled {
@@ -83,86 +130,193 @@ const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
     cursor: not-allowed;
     transform: none;
   }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[2]} ${theme.spacing[4]};
+  }
 `;
 
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
+  gap: ${theme.spacing[5]};
+  margin-bottom: ${theme.spacing[8]};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: ${theme.spacing[4]};
+    margin-bottom: ${theme.spacing[6]};
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const MetricCard = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
+  background: ${theme.colors.white};
+  padding: ${theme.spacing[6]};
+  border-radius: ${theme.borderRadius.xl};
+  box-shadow: ${theme.shadows.apple};
+  border: 1px solid ${theme.colors.gray[200]};
+  transition: all ${theme.transitions.normal};
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: ${theme.shadows.appleLg};
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[4]};
+  }
 `;
 
 const MetricLabel = styled.div`
-  font-size: 13px;
-  color: #86868b;
-  margin-bottom: 8px;
+  font-size: ${theme.typography.fontSize.xs};
+  color: ${theme.colors.text.tertiary};
+  margin-bottom: ${theme.spacing[2]};
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: ${theme.typography.fontWeight.semibold};
+  letter-spacing: ${theme.typography.letterSpacing.wider};
 `;
 
 const MetricValue = styled.div`
-  font-size: 28px;
-  font-weight: 700;
-  color: #1d1d1f;
+  font-size: ${theme.typography.fontSize['3xl']};
+  font-weight: ${theme.typography.fontWeight.bold};
+  color: ${theme.colors.text.primary};
+  line-height: ${theme.typography.lineHeight.tight};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize['2xl']};
+  }
 `;
 
 const MetricSubtext = styled.div`
-  font-size: 12px;
-  color: #86868b;
-  margin-top: 4px;
+  font-size: ${theme.typography.fontSize.xs};
+  color: ${theme.colors.text.secondary};
+  margin-top: ${theme.spacing[1]};
 `;
 
 const ChartCard = styled.div`
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
-  margin-bottom: 20px;
+  background: ${theme.colors.white};
+  padding: ${theme.spacing[6]};
+  border-radius: ${theme.borderRadius.xl};
+  box-shadow: ${theme.shadows.apple};
+  border: 1px solid ${theme.colors.gray[200]};
+  margin-bottom: ${theme.spacing[5]};
+  transition: all ${theme.transitions.normal};
+
+  &:hover {
+    box-shadow: ${theme.shadows.appleLg};
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[4]};
+  }
 `;
 
 const ChartTitle = styled.h3`
-  font-size: 18px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 20px;
+  font-size: ${theme.typography.fontSize.xl};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing[5]};
+  display: flex;
+  align-items: center;
+  gap: ${theme.spacing[2]};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize.lg};
+    margin-bottom: ${theme.spacing[4]};
+  }
 `;
 
 const StatusBadge = styled.div<{ status: 'training' | 'ready' | 'error' }>`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  gap: ${theme.spacing[2]};
+  padding: ${theme.spacing[2]} ${theme.spacing[3]};
+  border-radius: ${theme.borderRadius.full};
+  font-size: ${theme.typography.fontSize.xs};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  text-transform: uppercase;
+  letter-spacing: ${theme.typography.letterSpacing.wide};
   background: ${(props) => {
-    if (props.status === 'training') return '#fff3cd';
-    if (props.status === 'ready') return '#d4edda';
-    return '#f8d7da';
+    if (props.status === 'training') return theme.colors.warning + '20';
+    if (props.status === 'ready') return theme.colors.success + '20';
+    return theme.colors.error + '20';
   }};
   color: ${(props) => {
-    if (props.status === 'training') return '#856404';
-    if (props.status === 'ready') return '#155724';
-    return '#721c24';
+    if (props.status === 'training') return theme.colors.warning;
+    if (props.status === 'ready') return theme.colors.success;
+    return theme.colors.error;
+  }};
+  border: 1px solid ${(props) => {
+    if (props.status === 'training') return theme.colors.warning + '40';
+    if (props.status === 'ready') return theme.colors.success + '40';
+    return theme.colors.error + '40';
   }};
 `;
 
 const LoadingSpinner = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 60px 20px;
-  font-size: 16px;
-  color: #86868b;
+  padding: ${theme.spacing[20]} ${theme.spacing[5]};
+  gap: ${theme.spacing[4]};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[12]} ${theme.spacing[4]};
+  }
+
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+const EmptyStateContainer = styled.div`
+  text-align: center;
+  padding: ${theme.spacing[20]} ${theme.spacing[5]};
+
+  svg {
+    margin-bottom: ${theme.spacing[5]};
+  }
+
+  h3 {
+    font-size: ${theme.typography.fontSize['2xl']};
+    font-weight: ${theme.typography.fontWeight.semibold};
+    color: ${theme.colors.text.primary};
+    margin-bottom: ${theme.spacing[3]};
+  }
+
+  p {
+    font-size: ${theme.typography.fontSize.base};
+    color: ${theme.colors.text.secondary};
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: ${theme.typography.lineHeight.relaxed};
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[12]} ${theme.spacing[4]};
+
+    h3 {
+      font-size: ${theme.typography.fontSize.xl};
+    }
+
+    p {
+      font-size: ${theme.typography.fontSize.sm};
+    }
+  }
 `;
 
 interface ForecastData {
@@ -477,17 +631,15 @@ const SalesForecast: React.FC = () => {
 
       {!isForecast && !isTraining && (
         <ChartCard>
-          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
-            <Brain size={64} color="#d2d2d7" style={{ marginBottom: 20 }} />
-            <h3 style={{ color: '#1d1d1f', marginBottom: 12 }}>
-              Previsão de Vendas com Machine Learning
-            </h3>
-            <p style={{ color: '#86868b', maxWidth: 600, margin: '0 auto' }}>
+          <EmptyStateContainer>
+            <Brain size={80} color={theme.colors.gray[300]} />
+            <h3>Previsão de Vendas com Machine Learning</h3>
+            <p>
               Selecione um modelo de IA e o período desejado, depois clique em
               "Gerar Previsão" para treinar o modelo e visualizar as projeções
               de vendas futuras.
             </p>
-          </div>
+          </EmptyStateContainer>
         </ChartCard>
       )}
     </Container>

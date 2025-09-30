@@ -1,4 +1,5 @@
 import styled, { keyframes } from 'styled-components';
+import { theme } from '../theme';
 
 const fadeIn = keyframes`
   from {
@@ -11,89 +12,100 @@ const fadeIn = keyframes`
   }
 `;
 
-const shimmer = keyframes`
-  0% {
-    background-position: -1000px 0;
-  }
-  100% {
-    background-position: 1000px 0;
-  }
-`;
-
 export const LoginContainer = styled.div`
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: ${theme.colors.background.primary};
+  padding: ${theme.spacing[6]};
   position: relative;
   overflow: hidden;
 
+  /* Apple-style subtle gradient background */
   &::before {
     content: '';
     position: absolute;
-    width: 200%;
-    height: 200%;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60vh;
     background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.1),
-      transparent
+      180deg,
+      ${theme.colors.gray[50]} 0%,
+      ${theme.colors.background.primary} 100%
     );
-    animation: ${shimmer} 8s infinite;
+    z-index: 0;
+  }
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[4]};
   }
 `;
 
 export const LoginCard = styled.div`
-  background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 48px;
+  background: ${theme.colors.white};
+  border-radius: ${theme.borderRadius.xl};
+  box-shadow: ${theme.shadows.appleLg};
+  padding: ${theme.spacing[16]};
   width: 100%;
-  max-width: 440px;
-  animation: ${fadeIn} 0.6s ease-out;
+  max-width: 480px;
+  animation: ${fadeIn} 0.5s ${theme.transitions.appleEase};
   position: relative;
   z-index: 1;
+  border: 1px solid ${theme.colors.gray[200]};
 
-  @media (max-width: 480px) {
-    padding: 32px 24px;
+  @media (max-width: ${theme.breakpoints.md}) {
+    padding: ${theme.spacing[10]};
+    max-width: 420px;
+  }
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    padding: ${theme.spacing[8]};
   }
 `;
 
 export const LoginHeader = styled.div`
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: ${theme.spacing[12]};
 `;
 
 export const LoginLogo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: ${theme.spacing[3]};
+  margin-bottom: ${theme.spacing[6]};
 
   svg {
-    color: #667eea;
+    color: ${theme.colors.blue.DEFAULT};
+    stroke-width: 1.5;
   }
 `;
 
 export const LoginTitle = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  color: #1d1d1f;
-  margin-bottom: 8px;
+  font-size: ${theme.typography.fontSize['4xl']};
+  font-weight: ${theme.typography.fontWeight.bold};
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing[2]};
+  letter-spacing: ${theme.typography.letterSpacing.tight};
+
+  @media (max-width: ${theme.breakpoints.md}) {
+    font-size: ${theme.typography.fontSize['3xl']};
+  }
 `;
 
 export const LoginSubtitle = styled.p`
-  font-size: 16px;
-  color: #86868b;
+  font-size: ${theme.typography.fontSize.lg};
+  color: ${theme.colors.text.secondary};
+  font-weight: ${theme.typography.fontWeight.regular};
+  line-height: ${theme.typography.lineHeight.relaxed};
 `;
 
 export const LoginForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: ${theme.spacing[6]};
 `;
 
 export const FormField = styled.div`
@@ -102,10 +114,10 @@ export const FormField = styled.div`
 
 export const InputLabel = styled.label`
   display: block;
-  font-size: 14px;
-  font-weight: 600;
-  color: #1d1d1f;
-  margin-bottom: 8px;
+  font-size: ${theme.typography.fontSize.sm};
+  font-weight: ${theme.typography.fontWeight.semibold};
+  color: ${theme.colors.text.primary};
+  margin-bottom: ${theme.spacing[2]};
 `;
 
 export const InputWrapper = styled.div`
@@ -116,70 +128,76 @@ export const InputWrapper = styled.div`
 
 export const InputIcon = styled.div`
   position: absolute;
-  left: 16px;
-  color: #86868b;
+  left: ${theme.spacing[4]};
+  color: ${theme.colors.text.tertiary};
   display: flex;
   align-items: center;
   pointer-events: none;
+  z-index: 1;
 `;
 
 export const StyledInput = styled.input`
   width: 100%;
-  padding: 14px 16px 14px 48px;
-  border: 2px solid #e5e5e7;
-  border-radius: 12px;
-  font-size: 16px;
-  transition: all 0.2s ease;
-  background: white;
+  padding: ${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[12]};
+  border: 1.5px solid ${theme.colors.gray[300]};
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.typography.fontSize.base};
+  transition: all ${theme.transitions.fast};
+  background: ${theme.colors.white};
+  font-family: ${theme.typography.fontFamily.primary};
 
   &:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    border-color: ${theme.colors.blue.DEFAULT};
+    box-shadow: 0 0 0 3px ${theme.colors.blue.light}20;
   }
 
   &::placeholder {
-    color: #c7c7cc;
+    color: ${theme.colors.gray[400]};
   }
 
   &:disabled {
-    background: #f5f5f7;
+    background: ${theme.colors.gray[100]};
+    color: ${theme.colors.text.tertiary};
     cursor: not-allowed;
   }
 `;
 
 export const PasswordToggle = styled.button`
   position: absolute;
-  right: 16px;
+  right: ${theme.spacing[4]};
   background: none;
   border: none;
-  color: #86868b;
+  color: ${theme.colors.text.tertiary};
   cursor: pointer;
-  padding: 4px;
+  padding: ${theme.spacing[1]};
   display: flex;
   align-items: center;
-  transition: color 0.2s ease;
+  transition: color ${theme.transitions.fast};
+  border-radius: ${theme.borderRadius.md};
 
   &:hover {
-    color: #667eea;
+    color: ${theme.colors.blue.DEFAULT};
+    background: ${theme.colors.gray[100]};
   }
 
   &:focus {
-    outline: none;
+    outline: 2px solid ${theme.colors.blue.DEFAULT};
+    outline-offset: 2px;
   }
 `;
 
 export const ErrorMessage = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding: 12px;
-  background: #fff5f5;
-  border: 1px solid #feb2b2;
-  border-radius: 8px;
-  color: #c53030;
-  font-size: 14px;
+  gap: ${theme.spacing[2]};
+  margin-top: ${theme.spacing[2]};
+  padding: ${theme.spacing[3]} ${theme.spacing[4]};
+  background: ${theme.colors.error}10;
+  border: 1px solid ${theme.colors.error}40;
+  border-radius: ${theme.borderRadius.md};
+  color: ${theme.colors.error};
+  font-size: ${theme.typography.fontSize.sm};
 
   svg {
     flex-shrink: 0;
@@ -190,15 +208,21 @@ export const RememberForgotRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: -8px 0 8px;
+  margin: -${theme.spacing[2]} 0 ${theme.spacing[2]};
+
+  @media (max-width: ${theme.breakpoints.sm}) {
+    flex-direction: column;
+    gap: ${theme.spacing[3]};
+    align-items: flex-start;
+  }
 `;
 
 export const RememberMe = styled.label`
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #1d1d1f;
+  gap: ${theme.spacing[2]};
+  font-size: ${theme.typography.fontSize.sm};
+  color: ${theme.colors.text.primary};
   cursor: pointer;
   user-select: none;
 
@@ -206,105 +230,111 @@ export const RememberMe = styled.label`
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #667eea;
+    accent-color: ${theme.colors.blue.DEFAULT};
+    border-radius: ${theme.borderRadius.sm};
   }
 `;
 
 export const ForgotPassword = styled.a`
-  font-size: 14px;
-  color: #667eea;
+  font-size: ${theme.typography.fontSize.sm};
+  color: ${theme.colors.blue.DEFAULT};
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: ${theme.typography.fontWeight.medium};
+  transition: color ${theme.transitions.fast};
 
   &:hover {
-    color: #764ba2;
+    color: ${theme.colors.blue.dark};
+  }
+`;
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 `;
 
 export const LoginButton = styled.button<{ $isLoading?: boolean }>`
   width: 100%;
-  padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  padding: ${theme.spacing[4]};
+  background: ${theme.colors.blue.DEFAULT};
+  color: ${theme.colors.white};
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.typography.fontSize.base};
+  font-weight: ${theme.typography.fontWeight.semibold};
   cursor: ${({ $isLoading }) => ($isLoading ? 'not-allowed' : 'pointer')};
-  transition: all 0.3s ease;
+  transition: all ${theme.transitions.normal};
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  gap: ${theme.spacing[2]};
+  box-shadow: ${theme.shadows.sm};
+  font-family: ${theme.typography.fontFamily.primary};
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    background: ${theme.colors.blue.dark};
+    transform: translateY(-1px);
+    box-shadow: ${theme.shadows.md};
   }
 
   &:active:not(:disabled) {
     transform: translateY(0);
+    box-shadow: ${theme.shadows.sm};
   }
 
   &:disabled {
-    opacity: 0.7;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 
   svg {
-    animation: ${({ $isLoading }) => ($isLoading ? 'spin 1s linear infinite' : 'none')};
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+    animation: ${({ $isLoading }) => ($isLoading ? spin : 'none')} 1s linear infinite;
   }
 `;
 
 export const LoginFooter = styled.div`
-  margin-top: 32px;
+  margin-top: ${theme.spacing[8]};
   text-align: center;
-  font-size: 14px;
-  color: #86868b;
+  font-size: ${theme.typography.fontSize.sm};
+  color: ${theme.colors.text.secondary};
 `;
 
 export const SignupLink = styled.a`
-  color: #667eea;
+  color: ${theme.colors.blue.DEFAULT};
   text-decoration: none;
-  font-weight: 600;
-  transition: color 0.2s ease;
+  font-weight: ${theme.typography.fontWeight.semibold};
+  transition: color ${theme.transitions.fast};
 
   &:hover {
-    color: #764ba2;
+    color: ${theme.colors.blue.dark};
   }
 `;
 
 export const DemoCredentials = styled.div`
-  margin-top: 24px;
-  padding: 16px;
-  background: #f0f4ff;
-  border: 1px solid #d6e3ff;
-  border-radius: 12px;
-  font-size: 13px;
-  color: #4a5568;
+  margin-top: ${theme.spacing[6]};
+  padding: ${theme.spacing[4]};
+  background: ${theme.colors.gray[50]};
+  border: 1px solid ${theme.colors.gray[200]};
+  border-radius: ${theme.borderRadius.lg};
+  font-size: ${theme.typography.fontSize.sm};
+  color: ${theme.colors.text.secondary};
 
   strong {
-    color: #2d3748;
+    color: ${theme.colors.text.primary};
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: ${theme.spacing[2]};
+    font-weight: ${theme.typography.fontWeight.semibold};
   }
 
   code {
-    background: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: 'Courier New', monospace;
-    color: #667eea;
+    background: ${theme.colors.white};
+    padding: ${theme.spacing[1]} ${theme.spacing[2]};
+    border-radius: ${theme.borderRadius.sm};
+    font-family: ${theme.typography.fontFamily.mono};
+    color: ${theme.colors.blue.DEFAULT};
+    font-size: ${theme.typography.fontSize.xs};
   }
 `;
