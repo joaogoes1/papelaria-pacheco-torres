@@ -62,9 +62,9 @@ const ButtonGroup = styled.div`
 `;
 
 interface VendaFormData {
-  clienteId: number;
+  clienteId: string;
   itens: {
-    produtoId: number;
+    produtoId: string;
     quantidade: number;
   }[];
 }
@@ -91,8 +91,8 @@ const VendaModal: React.FC<VendaModalProps> = ({
     control,
   } = useForm<VendaFormData>({
     defaultValues: {
-      clienteId: 0,
-      itens: [{ produtoId: 0, quantidade: 1 }],
+      clienteId: '',
+      itens: [],
     },
   });
 
@@ -112,39 +112,47 @@ const VendaModal: React.FC<VendaModalProps> = ({
   useEffect(() => {
     let newTotal = 0;
     watchedItens.forEach((item) => {
-      const produto = produtos?.find(p => p.id === Number(item.produtoId));
+      const produto = produtos?.find(p => p.id === item.produtoId);
+      console.log('Calculando total - Item:', item, 'Produto encontrado:', produto);
       if (produto && item.quantidade) {
         newTotal += produto.preco * Number(item.quantidade);
       }
     });
+    console.log('Total calculado:', newTotal);
     setTotal(newTotal);
   }, [watchedItens, produtos]);
 
   React.useEffect(() => {
     if (isOpen) {
       reset({
-        clienteId: 0,
-        itens: [{ produtoId: 0, quantidade: 1 }],
+        clienteId: '',
+        itens: [],
       });
+      setTotal(0);
     }
   }, [isOpen, reset]);
 
   const onSubmit = async (data: VendaFormData) => {
     try {
+      // Valida se há pelo menos um item
+      if (!data.itens || data.itens.length === 0) {
+        throw new Error('Adicione pelo menos um item à venda');
+      }
+
       // Valida se há estoque suficiente
       for (const item of data.itens) {
-        const estoqueItem = estoque?.find(e => e.produtoId === Number(item.produtoId));
+        const estoqueItem = estoque?.find(e => e.produtoId === item.produtoId);
         if (!estoqueItem || estoqueItem.quantidade < Number(item.quantidade)) {
           throw new Error(`Estoque insuficiente para o produto selecionado`);
         }
       }
 
       const vendaData = {
-        clienteId: Number(data.clienteId),
+        clienteId: data.clienteId,
         itens: data.itens.map(item => {
-          const produto = produtos?.find(p => p.id === Number(item.produtoId));
+          const produto = produtos?.find(p => p.id === item.produtoId);
           return {
-            produtoId: Number(item.produtoId),
+            produtoId: item.produtoId,
             quantidade: Number(item.quantidade),
             precoUnitario: produto?.preco || 0,
           };
@@ -156,36 +164,30 @@ const VendaModal: React.FC<VendaModalProps> = ({
         (params) => vendasAPI.create(params),
         vendaData,
         {
-          successMessage: 'Venda registrada com sucesso!',
-          onSuccess: onSave,
+          successMessage: 'Venda registrada com sucesso! Estoque atualizado automaticamente.',
+          onSuccess: () => {
+            onSave();
+            onClose();
+          },
         }
       );
 
-      // Atualiza o estoque
-      for (const item of data.itens) {
-        const estoqueItem = estoque?.find(e => e.produtoId === Number(item.produtoId));
-        if (estoqueItem) {
-          await estoqueAPI.update(estoqueItem.id, {
-            quantidade: estoqueItem.quantidade - Number(item.quantidade),
-          });
-        }
-      }
+      // Não precisa atualizar estoque manualmente - o backend já faz isso automaticamente
     } catch (error) {
       // Error handling é feito no hook
     }
   };
 
   const addItem = () => {
-    append({ produtoId: 0, quantidade: 1 });
+    append({ produtoId: '', quantidade: 1 });
   };
 
   const removeItem = (index: number) => {
-    if (fields.length > 1) {
-      remove(index);
-    }
+    remove(index);
   };
 
-  const getAvailableStock = (produtoId: number) => {
+  const getAvailableStock = (produtoId: string) => {
+    if (!produtoId) return 0;
     const estoqueItem = estoque?.find(e => e.produtoId === produtoId);
     return estoqueItem?.quantidade || 0;
   };
@@ -205,12 +207,12 @@ const VendaModal: React.FC<VendaModalProps> = ({
             <Label htmlFor="clienteId">Cliente</Label>
             <Select
               id="clienteId"
-              {...register('clienteId', { 
+              {...register('clienteId', {
                 required: 'Cliente é obrigatório',
-                validate: (value) => Number(value) > 0 || 'Selecione um cliente'
+                validate: (value) => value !== '' || 'Selecione um cliente'
               })}
             >
-              <option value={0}>Selecione um cliente</option>
+              <option value="">Selecione um cliente</option>
               {clientes?.map((cliente) => (
                 <option key={cliente.id} value={cliente.id}>
                   {cliente.nome}
@@ -234,18 +236,21 @@ const VendaModal: React.FC<VendaModalProps> = ({
                 <FormGroup>
                   <Label>Produto</Label>
                   <Select
-                    {...register(`itens.${index}.produtoId`, { 
+                    {...register(`itens.${index}.produtoId`, {
                       required: 'Produto é obrigatório',
-                      validate: (value) => Number(value) > 0 || 'Selecione um produto'
+                      validate: (value) => value !== '' || 'Selecione um produto'
                     })}
                   >
-                    <option value={0}>Selecione um produto</option>
+                    <option value="">Selecione um produto</option>
                     {produtos?.map((produto) => (
                       <option key={produto.id} value={produto.id}>
                         {produto.nome} - R$ {produto.preco.toFixed(2)}
                       </option>
                     ))}
                   </Select>
+                  {errors.itens?.[index]?.produtoId && (
+                    <ErrorMessage>{errors.itens[index]?.produtoId?.message}</ErrorMessage>
+                  )}
                 </FormGroup>
 
                 <FormGroup>
@@ -253,28 +258,31 @@ const VendaModal: React.FC<VendaModalProps> = ({
                   <Input
                     type="number"
                     min="1"
-                    max={getAvailableStock(Number(watchedItens[index]?.produtoId))}
-                    {...register(`itens.${index}.quantidade`, { 
+                    max={getAvailableStock(watchedItens[index]?.produtoId)}
+                    {...register(`itens.${index}.quantidade`, {
                       required: 'Quantidade é obrigatória',
                       min: { value: 1, message: 'Mínimo 1' },
-                      max: { 
-                        value: getAvailableStock(Number(watchedItens[index]?.produtoId)),
-                        message: 'Estoque insuficiente'
+                      validate: (value) => {
+                        const stock = getAvailableStock(watchedItens[index]?.produtoId);
+                        return Number(value) <= stock || `Máximo ${stock} unidades`;
                       }
                     })}
                   />
+                  {errors.itens?.[index]?.quantidade && (
+                    <ErrorMessage>{errors.itens[index]?.quantidade?.message}</ErrorMessage>
+                  )}
                 </FormGroup>
 
                 <FormGroup>
                   <Label>Estoque</Label>
-                  <div style={{ 
-                    padding: '12px 16px', 
-                    background: '#f5f5f7', 
+                  <div style={{
+                    padding: '12px 16px',
+                    background: '#f5f5f7',
                     borderRadius: '8px',
                     fontSize: '14px',
                     color: '#86868b'
                   }}>
-                    {getAvailableStock(Number(watchedItens[index]?.produtoId))}
+                    {getAvailableStock(watchedItens[index]?.produtoId)}
                   </div>
                 </FormGroup>
 
@@ -284,7 +292,6 @@ const VendaModal: React.FC<VendaModalProps> = ({
                     size="sm"
                     variant="danger"
                     onClick={() => removeItem(index)}
-                    disabled={fields.length === 1}
                   >
                     <Trash2 size={14} />
                   </Button>
@@ -302,7 +309,7 @@ const VendaModal: React.FC<VendaModalProps> = ({
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading || total === 0}>
+            <Button type="submit" disabled={loading || fields.length === 0}>
               {loading ? 'Salvando...' : 'Finalizar Venda'}
             </Button>
           </ButtonGroup>

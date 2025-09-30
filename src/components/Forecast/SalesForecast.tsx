@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import ReactECharts from 'echarts-for-react';
 import {
-  TrendingUp,
-  Brain,
   Activity,
   AlertCircle,
+  Brain,
   CheckCircle,
   RefreshCw,
+  TrendingUp,
 } from 'lucide-react';
-import ReactECharts from 'echarts-for-react';
-import { forecastAPI } from '../../services/api';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
+import { forecastAPI } from '../../services/api';
 import { theme } from '../../styles/theme';
 
 const Container = styled.div`
