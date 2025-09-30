@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -8,6 +9,7 @@ import { GlobalStyles, Container } from './styles/GlobalStyles';
 import { theme } from './styles/theme';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import PageTransition from './components/PageTransition';
 import Header from './components/Layout/Header';
 import Navigation from './components/Layout/Navigation';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -76,86 +78,106 @@ const App: React.FC = () => {
             />
           )}
           <MainContent $isLogin={isLoginPage}>
-          <Routes>
-            {/* Public Route */}
-            <Route path="/login" element={<Login />} />
+            <AnimatePresence mode="wait">
+              <Routes location={location} key={location.pathname}>
+                {/* Public Route */}
+                <Route path="/login" element={
+                  <PageTransition>
+                    <Login />
+                  </PageTransition>
+                } />
 
-            {/* Protected Routes */}
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <Dashboard />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/clientes"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <ClientesList />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/produtos"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <ProdutosList />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/estoque"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <EstoqueList />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/vendas"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <VendasList />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/relatorios"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <Relatorios />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/previsao"
-              element={
-                <ProtectedRoute>
-                  <Container>
-                    <SalesForecast />
-                  </Container>
-                </ProtectedRoute>
-              }
-            />
+                {/* Protected Routes */}
+                <Route
+                  path="/"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <Dashboard />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/clientes"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <ClientesList />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/produtos"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <ProdutosList />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/estoque"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <EstoqueList />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/vendas"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <VendasList />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/relatorios"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <Relatorios />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/previsao"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <SalesForecast />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
 
-            {/* Catch all - redirect to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </MainContent>
+                {/* Catch all - redirect to home */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </AnimatePresence>
+          </MainContent>
         <ToastContainer
           position="top-right"
           autoClose={3000}
