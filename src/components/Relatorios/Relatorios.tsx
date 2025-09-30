@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { BarChart3, TrendingUp, Users, Package, Calendar, Download } from 'lucide-react';
 import { Card, Button } from '../../styles/GlobalStyles';
-import { useApi, useApiMutation } from '../../hooks/useApi';
+import { useApi } from '../../hooks/useApi';
 import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/api';
+import { MetricCardSkeleton, Skeleton } from '../Skeleton';
+import { toast } from 'react-toastify';
 
 const Title = styled.h1`
   font-size: 24px;
@@ -141,14 +143,16 @@ const Relatorios: React.FC = () => {
     produtosBaixoEstoque: 0,
   });
 
-  const { data: vendas } = useApi(() => vendasAPI.getAll());
-  const { data: clientes } = useApi(() => clientesAPI.getAll());
-  const { data: produtos } = useApi(() => produtosAPI.getAll());
-  const { data: estoque } = useApi(() => estoqueAPI.getAll());
+  const { data: vendas, loading: loadingVendasData } = useApi(() => vendasAPI.getAll());
+  const { data: clientes, loading: loadingClientesData } = useApi(() => clientesAPI.getAll());
+  const { data: produtos, loading: loadingProdutosData } = useApi(() => produtosAPI.getAll());
+  const { data: estoque, loading: loadingEstoqueData } = useApi(() => estoqueAPI.getAll());
 
-  const { mutate: exportarVendas, loading: loadingVendas } = useApiMutation();
-  const { mutate: exportarClientes, loading: loadingClientes } = useApiMutation();
-  const { mutate: exportarEstoque, loading: loadingEstoque } = useApiMutation();
+  const loading = loadingVendasData || loadingClientesData || loadingProdutosData || loadingEstoqueData;
+
+  const [loadingExportVendas, setLoadingExportVendas] = useState(false);
+  const [loadingExportClientes, setLoadingExportClientes] = useState(false);
+  const [loadingExportEstoque, setLoadingExportEstoque] = useState(false);
 
   useEffect(() => {
     if (vendas && clientes && produtos && estoque) {
@@ -172,43 +176,76 @@ const Relatorios: React.FC = () => {
     }
   }, [vendas, clientes, produtos, estoque]);
 
-  const handleExportVendas = () => {
-    exportarVendas(
-      () => vendasAPI.exportar(),
-      undefined,
-      {
-        successMessage: `Relatório de vendas solicitado. Você o receberá em breve.`,
-        onError: (error) => {
-          console.error(`Erro ao exportar relatório de vendas:`, error);
-        },
-      }
-    );
+  const handleExportVendas = async () => {
+    try {
+      setLoadingExportVendas(true);
+      const response = await vendasAPI.exportar();
+
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'vendas.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Relatório de vendas exportado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao exportar vendas:', error);
+      toast.error('Erro ao exportar relatório de vendas');
+    } finally {
+      setLoadingExportVendas(false);
+    }
   };
 
-  const handleExportClientes = () => {
-    exportarClientes(
-      () => clientesAPI.exportar(),
-      undefined,
-      {
-        successMessage: `Relatório de clientes solicitado. Você o receberá em breve.`,
-        onError: (error) => {
-          console.error(`Erro ao exportar relatório de clientes:`, error);
-        },
-      }
-    );
+  const handleExportClientes = async () => {
+    try {
+      setLoadingExportClientes(true);
+      const response = await clientesAPI.exportar();
+
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'clientes.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Relatório de clientes exportado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao exportar clientes:', error);
+      toast.error('Erro ao exportar relatório de clientes');
+    } finally {
+      setLoadingExportClientes(false);
+    }
   };
 
-  const handleExportEstoque = () => {
-    exportarEstoque(
-      () => estoqueAPI.exportar(),
-      undefined,
-      {
-        successMessage: `Relatório de estoque solicitado. Você o receberá em breve.`,
-        onError: (error) => {
-          console.error(`Erro ao exportar relatório de estoque:`, error);
-        },
-      }
-    );
+  const handleExportEstoque = async () => {
+    try {
+      setLoadingExportEstoque(true);
+      const response = await estoqueAPI.exportar();
+
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'estoque.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success('Relatório de estoque exportado com sucesso!');
+    } catch (error) {
+      console.error('Erro ao exportar estoque:', error);
+      toast.error('Erro ao exportar relatório de estoque');
+    } finally {
+      setLoadingExportEstoque(false);
+    }
   };
 
   const recentSales = vendas?.slice(-5).reverse() || [];
@@ -235,21 +272,31 @@ const Relatorios: React.FC = () => {
       <Title>Relatórios</Title>
 
       <ExportSection>
-        <Button onClick={handleExportVendas} disabled={loadingVendas}>
+        <Button onClick={handleExportVendas} disabled={loadingExportVendas}>
           <Download size={16} />
-          {loadingVendas ? 'Exportando...' : 'Exportar Vendas'}
+          {loadingExportVendas ? 'Exportando...' : 'Exportar Vendas'}
         </Button>
-        <Button onClick={handleExportClientes} disabled={loadingClientes}>
+        <Button onClick={handleExportClientes} disabled={loadingExportClientes}>
           <Download size={16} />
-          {loadingClientes ? 'Exportando...' : 'Exportar Clientes'}
+          {loadingExportClientes ? 'Exportando...' : 'Exportar Clientes'}
         </Button>
-        <Button onClick={handleExportEstoque} disabled={loadingEstoque}>
+        <Button onClick={handleExportEstoque} disabled={loadingExportEstoque}>
           <Download size={16} />
-          {loadingEstoque ? 'Exportando...' : 'Exportar Estoque'}
+          {loadingExportEstoque ? 'Exportando...' : 'Exportar Estoque'}
         </Button>
       </ExportSection>
 
-      <StatsGrid>
+      {loading ? (
+        <StatsGrid>
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+        </StatsGrid>
+      ) : (
+        <StatsGrid>
         <StatsCard>
           <StatsIcon color="#007aff">
             <TrendingUp size={24} />
@@ -310,54 +357,81 @@ const Relatorios: React.FC = () => {
           </StatsContent>
         </StatsCard>
       </StatsGrid>
+      )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-        <ReportSection>
-          <SectionTitle>Vendas Recentes</SectionTitle>
-          <RecentSalesCard>
-            {recentSales.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#86868b', padding: '20px' }}>
-                Nenhuma venda realizada
-              </div>
-            ) : (
-              recentSales.map((venda) => (
-                <SaleItem key={venda.id}>
-                  <SaleInfo>
-                    <SaleName>{getClienteName(venda.clienteId)}</SaleName>
-                    <SaleDate>{formatDate(venda.data)}</SaleDate>
-                  </SaleInfo>
-                  <SaleValue>R$ {venda.total.toFixed(2).replace('.', ',')}</SaleValue>
-                </SaleItem>
-              ))
-            )}
-          </RecentSalesCard>
-        </ReportSection>
+      {loading ? (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <ReportSection>
+            <Skeleton width="150px" height="24px" radius="6px" style={{ marginBottom: '16px' }} />
+            <Card style={{ padding: '24px' }}>
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" />
+            </Card>
+          </ReportSection>
 
-        <ReportSection>
-          <SectionTitle>Alertas de Estoque</SectionTitle>
-          <StockAlerts>
-            {lowStockProducts.length === 0 ? (
-              <div style={{ textAlign: 'center', color: '#86868b', padding: '20px' }}>
-                Todos os produtos têm estoque adequado
-              </div>
-            ) : (
-              lowStockProducts.map((item) => (
-                <AlertItem key={item.id}>
-                  <AlertIcon />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: '500', color: '#1d1d1f' }}>
-                      {getProductName(item.produtoId)}
+          <ReportSection>
+            <Skeleton width="150px" height="24px" radius="6px" style={{ marginBottom: '16px' }} />
+            <Card style={{ padding: '24px' }}>
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" style={{ marginBottom: '12px' }} />
+              <Skeleton width="100%" height="60px" radius="8px" />
+            </Card>
+          </ReportSection>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <ReportSection>
+            <SectionTitle>Vendas Recentes</SectionTitle>
+            <RecentSalesCard>
+              {recentSales.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#86868b', padding: '20px' }}>
+                  Nenhuma venda realizada
+                </div>
+              ) : (
+                recentSales.map((venda) => (
+                  <SaleItem key={venda.id}>
+                    <SaleInfo>
+                      <SaleName>{getClienteName(venda.clienteId)}</SaleName>
+                      <SaleDate>{formatDate(venda.data)}</SaleDate>
+                    </SaleInfo>
+                    <SaleValue>R$ {venda.total.toFixed(2).replace('.', ',')}</SaleValue>
+                  </SaleItem>
+                ))
+              )}
+            </RecentSalesCard>
+          </ReportSection>
+
+          <ReportSection>
+            <SectionTitle>Alertas de Estoque</SectionTitle>
+            <StockAlerts>
+              {lowStockProducts.length === 0 ? (
+                <div style={{ textAlign: 'center', color: '#86868b', padding: '20px' }}>
+                  Todos os produtos têm estoque adequado
+                </div>
+              ) : (
+                lowStockProducts.map((item) => (
+                  <AlertItem key={item.id}>
+                    <AlertIcon />
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontWeight: '500', color: '#1d1d1f' }}>
+                        {getProductName(item.produtoId)}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#86868b' }}>
+                        Estoque: {item.quantidade} | Mínimo: {item.quantidadeMinima}
+                      </div>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#86868b' }}>
-                      Estoque: {item.quantidade} | Mínimo: {item.quantidadeMinima}
-                    </div>
-                  </div>
-                </AlertItem>
-              ))
-            )}
-          </StockAlerts>
-        </ReportSection>
-      </div>
+                  </AlertItem>
+                ))
+              )}
+            </StockAlerts>
+          </ReportSection>
+        </div>
+      )}
     </>
   );
 };
