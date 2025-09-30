@@ -1,30 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import { AlertTriangle, Edit, Package, Search } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Search, Package, Edit, AlertTriangle } from 'lucide-react';
+import { useApi } from '../../hooks/useApi';
+import { estoqueAPI, produtosAPI } from '../../services/api';
 import {
-  Card,
+  Badge,
   Button,
+  Card,
   Input,
+  SearchBar,
   Select,
   Table,
-  TableHeader,
   TableCell,
+  TableHeader,
   TableRow,
-  SearchBar,
-  Badge,
 } from '../../styles/GlobalStyles';
 import {
+  ActionButtons,
+  EmptyIcon,
+  EmptyState,
   HeaderSection,
   Title,
-  EmptyState,
-  EmptyIcon,
-  ActionButtons,
 } from '../../styles/components';
-import { useApi, useApiMutation } from '../../hooks/useApi';
-import { estoqueAPI, produtosAPI } from '../../services/api';
+import { theme } from '../../styles/theme';
 import { Estoque, Produto } from '../../types';
 import EstoqueModal from './EstoqueModal';
-import { theme } from '../../styles/theme';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -61,38 +61,83 @@ interface EstoqueWithProduto extends Estoque {
 
 const EstoqueList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [showLowStock, setShowLowStock] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingEstoque, setEditingEstoque] = useState<EstoqueWithProduto | null>(null);
   const [estoqueWithProdutos, setEstoqueWithProdutos] = useState<EstoqueWithProduto[]>([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const { data: estoque, loading: loadingEstoque, refetch } = useApi(() => estoqueAPI.getAll());
   const { data: produtos, loading: loadingProdutos } = useApi(() => produtosAPI.getAll());
 
-  // Combina dados de estoque com produtos
+  // Debounce search term
   useEffect(() => {
-    if (estoque && produtos) {
-      const combined = estoque.map(item => ({
-        ...item,
-        produto: produtos.find(p => p.id === item.produtoId)
-      }));
-      setEstoqueWithProdutos(combined);
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Fetch paginated estoque data
+  const fetchEstoque = async () => {
+    try {
+      setLoading(true);
+      const searchParam = debouncedSearchTerm.trim() || undefined;
+      const lowStockParam = showLowStock || undefined;
+      const response = await estoqueAPI.getAll(currentPage, pageSize, searchParam, lowStockParam);
+      let estoqueData: Estoque[] = [];
+
+      // Check if response is paginated (Spring Boot Page format)
+      if (response.data && typeof response.data === 'object' && 'content' in response.data) {
+        const pageData = response.data as any;
+        estoqueData = pageData.content;
+        setTotalPages(pageData.totalPages);
+        setTotalElements(pageData.totalElements);
+      } else {
+        // Fallback for non-paginated response (simple array)
+        estoqueData = response.data as Estoque[];
+        setTotalElements(estoqueData.length);
+        setTotalPages(1);
+      }
+
+      // Combine with produtos
+      if (produtos) {
+        let combined = estoqueData.map(item => ({
+          ...item,
+          produto: produtos.find(p => p.id === item.produtoId)
+        }));
+
+        // Apply client-side category filter (backend doesn't support this)
+        if (categoryFilter) {
+          combined = combined.filter((item) => {
+            if (!item.produto) return false;
+            return item.produto.categoria === categoryFilter;
+          });
+        }
+
+        setEstoqueWithProdutos(combined);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar estoque:', error);
+    } finally {
+      setLoading(false);
     }
-  }, [estoque, produtos]);
+  };
+
+  // Fetch data when page, pageSize, search, lowStock filter, category, or produtos change
+  useEffect(() => {
+    if (produtos) {
+      fetchEstoque();
+    }
+  }, [currentPage, pageSize, debouncedSearchTerm, showLowStock, categoryFilter, produtos]);
 
   const categories = [...new Set(produtos?.map(p => p.categoria) || [])];
-
-  const filteredEstoque = estoqueWithProdutos.filter((item) => {
-    if (!item.produto) return false;
-    
-    const matchesSearch = 
-      item.produto.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.produto.codigo.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesCategory = !categoryFilter || item.produto.categoria === categoryFilter;
-    
-    return matchesSearch && matchesCategory;
-  });
 
   const handleEdit = (item: EstoqueWithProduto) => {
     setEditingEstoque(item);
@@ -105,8 +150,78 @@ const EstoqueList: React.FC = () => {
   };
 
   const handleSaveSuccess = () => {
-    refetch();
+    fetchEstoque();
     handleCloseModal();
+  };
+
+  const renderPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      // Show all pages if total is small
+      for (let i = 0; i < totalPages; i++) {
+        pages.push(
+          <PageButton
+            key={i}
+            $active={currentPage === i}
+            onClick={() => setCurrentPage(i)}
+          >
+            {i + 1}
+          </PageButton>
+        );
+      }
+    } else {
+      // Show first page
+      pages.push(
+        <PageButton
+          key={0}
+          $active={currentPage === 0}
+          onClick={() => setCurrentPage(0)}
+        >
+          1
+        </PageButton>
+      );
+
+      // Show ellipsis if needed
+      if (currentPage > 2) {
+        pages.push(<PageEllipsis key="ellipsis1">...</PageEllipsis>);
+      }
+
+      // Show pages around current page
+      const start = Math.max(1, currentPage - 1);
+      const end = Math.min(totalPages - 2, currentPage + 1);
+
+      for (let i = start; i <= end; i++) {
+        pages.push(
+          <PageButton
+            key={i}
+            $active={currentPage === i}
+            onClick={() => setCurrentPage(i)}
+          >
+            {i + 1}
+          </PageButton>
+        );
+      }
+
+      // Show ellipsis if needed
+      if (currentPage < totalPages - 3) {
+        pages.push(<PageEllipsis key="ellipsis2">...</PageEllipsis>);
+      }
+
+      // Show last page
+      pages.push(
+        <PageButton
+          key={totalPages - 1}
+          $active={currentPage === totalPages - 1}
+          onClick={() => setCurrentPage(totalPages - 1)}
+        >
+          {totalPages}
+        </PageButton>
+      );
+    }
+
+    return pages;
   };
 
   const getStockStatus = (quantidade: number, minima: number) => {
@@ -119,7 +234,7 @@ const EstoqueList: React.FC = () => {
     }
   };
 
-  if (loadingEstoque || loadingProdutos) {
+  if (loading || loadingProdutos) {
     return (
       <LoadingContainer>
         <LoadingSpinner />
@@ -167,11 +282,19 @@ const EstoqueList: React.FC = () => {
               </option>
             ))}
           </Select>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+            <input
+              type="checkbox"
+              checked={showLowStock}
+              onChange={(e) => setShowLowStock(e.target.checked)}
+            />
+            Mostrar apenas estoque baixo
+          </label>
         </SearchBar>
       </Card>
 
       <Card>
-        {filteredEstoque.length === 0 ? (
+        {estoqueWithProdutos.length === 0 ? (
           <EmptyState>
             <EmptyIcon>
               <Package size={32} color="#86868b" />
@@ -197,7 +320,7 @@ const EstoqueList: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredEstoque.map((item) => {
+              {estoqueWithProdutos.map((item) => {
                 const status = getStockStatus(item.quantidade, item.quantidadeMinima);
                 return (
                   <TableRow key={item.id}>
@@ -238,6 +361,44 @@ const EstoqueList: React.FC = () => {
             </tbody>
           </Table>
         )}
+        <PaginationContainer>
+          <PageSizeSelector>
+            <label>Itens por página:</label>
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(0);
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+            </select>
+          </PageSizeSelector>
+
+          <PaginationInfo>
+            Mostrando {estoqueWithProdutos.length} de {totalElements} registros
+          </PaginationInfo>
+
+          <PaginationButtons>
+            <PageButton
+              onClick={() => setCurrentPage(prev => prev - 1)}
+              disabled={currentPage === 0}
+            >
+              ←
+            </PageButton>
+
+            {renderPageNumbers()}
+
+            <PageButton
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              disabled={currentPage >= totalPages - 1}
+            >
+              →
+            </PageButton>
+          </PaginationButtons>
+        </PaginationContainer>
       </Card>
 
       <EstoqueModal
@@ -249,5 +410,82 @@ const EstoqueList: React.FC = () => {
     </>
   );
 };
+
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding: 15px 15px;
+  border-top: 1px solid #ddd;
+  flex-wrap: wrap;
+  gap: 15px;
+`;
+
+const PageSizeSelector = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  label {
+    color: #666;
+    font-size: 14px;
+  }
+
+  select {
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+  }
+`;
+
+const PaginationInfo = styled.div`
+  color: #666;
+  font-size: 14px;
+`;
+
+const PaginationButtons = styled.div`
+  display: flex;
+  gap: 5px;
+  align-items: center;
+`;
+
+const PageButton = styled.button<{ $active?: boolean }>`
+  min-width: 36px;
+  height: 36px;
+  padding: 8px 12px;
+  background-color: ${props => props.$active ? '#007bff' : 'white'};
+  color: ${props => props.$active ? 'white' : '#007bff'};
+  border: 1px solid ${props => props.$active ? '#007bff' : '#ddd'};
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: ${props => props.$active ? '600' : '400'};
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: ${props => props.$active ? '#0056b3' : '#f0f0f0'};
+    border-color: #007bff;
+  }
+
+  &:disabled {
+    background-color: #f8f9fa;
+    color: #ccc;
+    border-color: #e9ecef;
+    cursor: not-allowed;
+  }
+`;
+
+const PageEllipsis = styled.span`
+  padding: 8px 4px;
+  color: #666;
+`;
 
 export default EstoqueList;

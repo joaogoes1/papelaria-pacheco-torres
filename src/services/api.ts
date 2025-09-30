@@ -63,7 +63,17 @@ api.interceptors.response.use(
 
 // Clientes
 export const clientesAPI = {
-  getAll: () => api.get<Cliente[]>('/clientes'),
+  getAll: (page?: number, size?: number, search?: string) => {
+    const params = new URLSearchParams();
+    if (page !== undefined) params.append('page', page.toString());
+    if (size !== undefined) params.append('size', size.toString());
+    if (search) params.append('search', search);
+
+    if (page !== undefined && size !== undefined) {
+      return api.get<any>(`/clientes?${params.toString()}`);
+    }
+    return api.get<Cliente[]>('/clientes');
+  },
   getById: (id: number) => api.get<Cliente>(`/clientes/${id}`),
   create: (cliente: Omit<Cliente, 'id' | 'createdAt'>) =>
     api.post<Cliente>('/clientes', {
@@ -81,7 +91,18 @@ export const clientesAPI = {
 
 // Produtos
 export const produtosAPI = {
-  getAll: () => api.get<Produto[]>('/produtos'),
+  getAll: (page?: number, size?: number, search?: string, categoria?: string) => {
+    const params = new URLSearchParams();
+    if (page !== undefined) params.append('page', page.toString());
+    if (size !== undefined) params.append('size', size.toString());
+    if (search) params.append('search', search);
+    if (categoria) params.append('categoria', categoria);
+
+    if (page !== undefined && size !== undefined) {
+      return api.get<any>(`/produtos?${params.toString()}`);
+    }
+    return api.get<Produto[]>('/produtos');
+  },
   getById: (id: number) => api.get<Produto>(`/produtos/${id}`),
   create: (produto: Omit<Produto, 'id' | 'createdAt'>) =>
     api.post<Produto>('/produtos', {
@@ -95,7 +116,18 @@ export const produtosAPI = {
 
 // Estoque
 export const estoqueAPI = {
-  getAll: () => api.get<Estoque[]>('/estoque'),
+  getAll: (page?: number, size?: number, search?: string, lowStock?: boolean) => {
+    const params = new URLSearchParams();
+    if (page !== undefined) params.append('page', page.toString());
+    if (size !== undefined) params.append('size', size.toString());
+    if (search) params.append('search', search);
+    if (lowStock !== undefined) params.append('lowStock', lowStock.toString());
+
+    if (page !== undefined && size !== undefined) {
+      return api.get<any>(`/estoque?${params.toString()}`);
+    }
+    return api.get<Estoque[]>('/estoque');
+  },
   getById: (id: number) => api.get<Estoque>(`/estoque/${id}`),
   getByProdutoId: (produtoId: number) =>
     api.get<Estoque[]>(`/estoque?produtoId=${produtoId}`),
@@ -111,7 +143,19 @@ export const estoqueAPI = {
 
 // Vendas
 export const vendasAPI = {
-  getAll: () => api.get<Venda[]>('/vendas'),
+  getAll: (page?: number, size?: number, nomeCliente?: string, valorMin?: number, valorMax?: number) => {
+    const params = new URLSearchParams();
+    if (page !== undefined) params.append('page', page.toString());
+    if (size !== undefined) params.append('size', size.toString());
+    if (nomeCliente) params.append('nomeCliente', nomeCliente);
+    if (valorMin !== undefined) params.append('valorMin', valorMin.toString());
+    if (valorMax !== undefined) params.append('valorMax', valorMax.toString());
+
+    if (page !== undefined && size !== undefined) {
+      return api.get<any>(`/vendas?${params.toString()}`);
+    }
+    return api.get<Venda[]>('/vendas');
+  },
   getById: (id: number) => api.get<Venda>(`/vendas/${id}`),
   create: (venda: Omit<Venda, 'id'>) =>
     api.post<Venda>('/vendas', {
