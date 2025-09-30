@@ -23,37 +23,9 @@ import {
 } from '../../styles/components';
 import { theme } from '../../styles/theme';
 import { Cliente, Produto, Venda } from '../../types';
+import { TableSkeleton, SearchBarSkeleton, SearchInputSkeleton, PaginationSkeleton, Skeleton } from '../Skeleton';
 import VendaDetailsModal from './VendaDetailsModal';
 import VendaModal from './VendaModal';
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  gap: ${theme.spacing[4]};
-`;
-
-const LoadingSpinner = styled.div`
-  width: 48px;
-  height: 48px;
-  border: 4px solid ${theme.colors.gray[200]};
-  border-top-color: ${theme.colors.blue.DEFAULT};
-  border-radius: ${theme.borderRadius.full};
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  font-size: ${theme.typography.fontSize.lg};
-  color: ${theme.colors.text.secondary};
-`;
 
 interface VendaWithDetails extends Venda {
   cliente?: Cliente;
@@ -255,15 +227,6 @@ const VendasList: React.FC = () => {
     });
   };
 
-  if (loading || loadingClientes || loadingProdutos) {
-    return (
-      <LoadingContainer>
-        <LoadingSpinner />
-        <LoadingText>Carregando vendas...</LoadingText>
-      </LoadingContainer>
-    );
-  }
-
   return (
     <>
       <HeaderSection>
@@ -274,102 +237,125 @@ const VendasList: React.FC = () => {
         </Button>
       </HeaderSection>
 
-      <Card style={{ padding: '24px', marginBottom: '24px' }}>
-        <SearchBar style={{ flexWrap: 'wrap', gap: '12px' }}>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px', minWidth: '250px' }}>
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#86868b',
-              }}
-            />
-            <Input
-              type="text"
-              placeholder="Buscar por nome do cliente..."
-              value={nomeCliente}
-              onChange={(e) => setNomeCliente(e.target.value)}
-              style={{ paddingLeft: '40px' }}
-            />
-          </div>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            <Input
-              type="number"
-              placeholder="Valor mínimo"
-              value={valorMin}
-              onChange={(e) => setValorMin(e.target.value)}
-              style={{ minWidth: '150px' }}
-              step="0.01"
-            />
-            <span style={{ color: '#86868b' }}>até</span>
-            <Input
-              type="number"
-              placeholder="Valor máximo"
-              value={valorMax}
-              onChange={(e) => setValorMax(e.target.value)}
-              style={{ minWidth: '150px' }}
-              step="0.01"
-            />
-          </div>
-        </SearchBar>
-      </Card>
+      {loading || loadingClientes || loadingProdutos ? (
+        <>
+          <SearchBarSkeleton>
+            <SearchInputSkeleton>
+              <Skeleton width="100%" height="44px" radius="12px" />
+            </SearchInputSkeleton>
+            <div style={{ display: 'flex', gap: '12px', flex: '0 0 auto' }}>
+              <div style={{ minWidth: '150px' }}>
+                <Skeleton width="100%" height="44px" radius="12px" />
+              </div>
+              <div style={{ minWidth: '150px' }}>
+                <Skeleton width="100%" height="44px" radius="12px" />
+              </div>
+            </div>
+          </SearchBarSkeleton>
 
-      <Card>
-        {vendasWithDetails.length === 0 ? (
-          <EmptyState>
-            <EmptyIcon>
-              <ShoppingCart size={32} color="#86868b" />
-            </EmptyIcon>
-            <h3>Nenhuma venda encontrada</h3>
-            <p>
-              {nomeCliente || valorMin || valorMax
-                ? 'Tente ajustar os filtros de busca'
-                : 'Comece registrando sua primeira venda'}
-            </p>
-          </EmptyState>
-        ) : (
-          <Table>
-            <thead>
-              <tr>
-                <TableHeader>#</TableHeader>
-                <TableHeader>Cliente</TableHeader>
-                <TableHeader>Data</TableHeader>
-                <TableHeader>Itens</TableHeader>
-                <TableHeader>Total</TableHeader>
-                <TableHeader>Ações</TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {vendasWithDetails.map((venda) => (
-                <TableRow key={venda.id}>
-                  <TableCell>#{venda.id}</TableCell>
-                  <TableCell>{venda.cliente?.nome}</TableCell>
-                  <TableCell>{formatDate(venda.data)}</TableCell>
-                  <TableCell>{venda.itens.length} item(s)</TableCell>
-                  <TotalCell>
-                    R$ {venda.total.toFixed(2).replace('.', ',')}
-                  </TotalCell>
-                  <TableCell>
-                    <ActionButtons>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => handleViewDetails(venda)}
-                      >
-                        <Eye size={14} />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => handleDelete(venda.id)}
-                      >
-                        <Trash2 size={14} />
-                      </Button>
-                    </ActionButtons>
-                  </TableCell>
+          <Card>
+            <TableSkeleton rows={pageSize} columns={5} />
+            <PaginationSkeleton />
+          </Card>
+        </>
+      ) : (
+        <>
+          <Card style={{ padding: '24px', marginBottom: '24px' }}>
+            <SearchBar style={{ flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ position: 'relative', flex: 1, maxWidth: '400px', minWidth: '250px' }}>
+                <Search
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#86868b',
+                  }}
+                />
+                <Input
+                  type="text"
+                  placeholder="Buscar por nome do cliente..."
+                  value={nomeCliente}
+                  onChange={(e) => setNomeCliente(e.target.value)}
+                  style={{ paddingLeft: '40px' }}
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <Input
+                  type="number"
+                  placeholder="Valor mínimo"
+                  value={valorMin}
+                  onChange={(e) => setValorMin(e.target.value)}
+                  style={{ minWidth: '150px' }}
+                  step="0.01"
+                />
+                <span style={{ color: '#86868b' }}>até</span>
+                <Input
+                  type="number"
+                  placeholder="Valor máximo"
+                  value={valorMax}
+                  onChange={(e) => setValorMax(e.target.value)}
+                  style={{ minWidth: '150px' }}
+                  step="0.01"
+                />
+              </div>
+            </SearchBar>
+          </Card>
+
+          <Card>
+            {vendasWithDetails.length === 0 ? (
+              <EmptyState>
+                <EmptyIcon>
+                  <ShoppingCart size={32} color="#86868b" />
+                </EmptyIcon>
+                <h3>Nenhuma venda encontrada</h3>
+                <p>
+                  {nomeCliente || valorMin || valorMax
+                    ? 'Tente ajustar os filtros de busca'
+                    : 'Comece registrando sua primeira venda'}
+                </p>
+              </EmptyState>
+            ) : (
+              <Table>
+                <thead>
+                  <tr>
+                    <TableHeader>#</TableHeader>
+                    <TableHeader>Cliente</TableHeader>
+                    <TableHeader>Data</TableHeader>
+                    <TableHeader>Itens</TableHeader>
+                    <TableHeader>Total</TableHeader>
+                    <TableHeader>Ações</TableHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  {vendasWithDetails.map((venda) => (
+                    <TableRow key={venda.id}>
+                      <TableCell>#{venda.id}</TableCell>
+                      <TableCell>{venda.cliente?.nome}</TableCell>
+                      <TableCell>{formatDate(venda.data)}</TableCell>
+                      <TableCell>{venda.itens.length} item(s)</TableCell>
+                      <TotalCell>
+                        R$ {venda.total.toFixed(2).replace('.', ',')}
+                      </TotalCell>
+                      <TableCell>
+                        <ActionButtons>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleViewDetails(venda)}
+                          >
+                            <Eye size={14} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            onClick={() => handleDelete(venda.id)}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </ActionButtons>
+                      </TableCell>
                 </TableRow>
               ))}
             </tbody>
@@ -414,6 +400,8 @@ const VendasList: React.FC = () => {
           </PaginationButtons>
         </PaginationContainer>
       </Card>
+        </>
+      )}
 
       <VendaModal
         isOpen={modalOpen}

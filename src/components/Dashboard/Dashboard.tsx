@@ -39,6 +39,13 @@ import {
 } from "../Charts";
 import { useDashboardStats, useDashboardCharts } from "../../hooks/useDashboardData";
 import { theme } from "../../styles/theme";
+import {
+  MetricCardSkeleton,
+  MetricCardsSkeletonGrid,
+  QuickActionsSkeleton,
+  ChartSkeleton,
+  ChartsSkeletonGrid,
+} from "../Skeleton";
 
 const HeroSection = styled.div`
   margin-bottom: ${theme.spacing[10]};
@@ -82,48 +89,10 @@ const HeroSubtitle = styled.p`
   }
 `;
 
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  gap: ${theme.spacing[4]};
-`;
-
-const LoadingSpinner = styled.div`
-  width: 48px;
-  height: 48px;
-  border: 4px solid ${theme.colors.gray[200]};
-  border-top-color: ${theme.colors.blue.DEFAULT};
-  border-radius: ${theme.borderRadius.full};
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  font-size: ${theme.typography.fontSize.lg};
-  color: ${theme.colors.text.secondary};
-`;
-
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { stats, loading: statsLoading } = useDashboardStats();
   const { chartsData, loading: chartsLoading } = useDashboardCharts();
-
-  if (statsLoading || chartsLoading) {
-    return (
-      <LoadingContainer>
-        <LoadingSpinner />
-        <LoadingText>Carregando dados do dashboard...</LoadingText>
-      </LoadingContainer>
-    );
-  }
 
   return (
     <>
@@ -133,7 +102,16 @@ const Dashboard: React.FC = () => {
           Visão geral completa do seu negócio em tempo real
         </HeroSubtitle>
       </HeroSection>
-      <DashboardGrid>
+
+      {statsLoading ? (
+        <MetricCardsSkeletonGrid>
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+          <MetricCardSkeleton />
+        </MetricCardsSkeletonGrid>
+      ) : (
+        <DashboardGrid>
         <StatsCard>
           <StatsIcon color="#007aff">
             <Users size={24} />
@@ -174,9 +152,13 @@ const Dashboard: React.FC = () => {
           </StatsContent>
         </StatsCard>
       </DashboardGrid>
+      )}
 
       <SectionTitle>Ações Rápidas</SectionTitle>
-      <QuickActions>
+      {statsLoading ? (
+        <QuickActionsSkeleton />
+      ) : (
+        <QuickActions>
         <ActionCard onClick={() => navigate("/clientes")}>
           <ActionIcon>
             <Plus size={24} />
@@ -215,9 +197,20 @@ const Dashboard: React.FC = () => {
           <ActionDescription>Gerencie o estoque dos produtos</ActionDescription>
         </ActionCard>
       </QuickActions>
+      )}
 
       <SectionTitle>Análise Estatística</SectionTitle>
-      <ChartsGrid>
+      {chartsLoading ? (
+        <ChartsSkeletonGrid>
+          <ChartSkeleton type="line" />
+          <ChartSkeleton type="bar" />
+          <ChartSkeleton type="line" />
+          <ChartSkeleton type="bar" />
+          <ChartSkeleton type="bar" />
+          <ChartSkeleton type="bar" />
+        </ChartsSkeletonGrid>
+      ) : (
+        <ChartsGrid>
         <ChartCard>
           <NormalDistributionChart 
             media={chartsData.normalDistribution.media} 
@@ -263,28 +256,31 @@ const Dashboard: React.FC = () => {
           />
         </ChartCard>
       </ChartsGrid>
+      )}
 
-      <AlertsSection>
-        <SectionTitle>Alertas</SectionTitle>
-        {chartsData.alertas.length > 0 ? (
-          chartsData.alertas.map((alerta, index) => (
-            <AlertCard key={index}>
-              <AlertTriangle size={20} color="#ffa500" />
+      {!chartsLoading && (
+        <AlertsSection>
+          <SectionTitle>Alertas</SectionTitle>
+          {chartsData.alertas.length > 0 ? (
+            chartsData.alertas.map((alerta, index) => (
+              <AlertCard key={index}>
+                <AlertTriangle size={20} color="#ffa500" />
+                <div>
+                  <strong>Estoque baixo:</strong> Produto ID {alerta.produtoId} está com
+                  {alerta.quantidade} unidades (mínimo: {alerta.quantidadeMinima}).
+                </div>
+              </AlertCard>
+            ))
+          ) : (
+            <AlertCard>
+              <AlertTriangle size={20} color="#34c759" />
               <div>
-                <strong>Estoque baixo:</strong> Produto ID {alerta.produtoId} está com 
-                {alerta.quantidade} unidades (mínimo: {alerta.quantidadeMinima}).
+                <strong>Tudo em ordem:</strong> Nenhum produto com estoque baixo.
               </div>
             </AlertCard>
-          ))
-        ) : (
-          <AlertCard>
-            <AlertTriangle size={20} color="#34c759" />
-            <div>
-              <strong>Tudo em ordem:</strong> Nenhum produto com estoque baixo.
-            </div>
-          </AlertCard>
-        )}
-      </AlertsSection>
+          )}
+        </AlertsSection>
+      )}
     </>
   );
 };

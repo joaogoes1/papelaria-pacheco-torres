@@ -24,36 +24,8 @@ import {
 } from '../../styles/components';
 import { theme } from '../../styles/theme';
 import { Estoque, Produto } from '../../types';
+import { TableSkeleton, SearchBarSkeleton, SearchInputSkeleton, PaginationSkeleton, Skeleton } from '../Skeleton';
 import EstoqueModal from './EstoqueModal';
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  gap: ${theme.spacing[4]};
-`;
-
-const LoadingSpinner = styled.div`
-  width: 48px;
-  height: 48px;
-  border: 4px solid ${theme.colors.gray[200]};
-  border-top-color: ${theme.colors.blue.DEFAULT};
-  border-radius: ${theme.borderRadius.full};
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  font-size: ${theme.typography.fontSize.lg};
-  color: ${theme.colors.text.secondary};
-`;
 
 interface EstoqueWithProduto extends Estoque {
   produto?: Produto;
@@ -234,172 +206,186 @@ const EstoqueList: React.FC = () => {
     }
   };
 
-  if (loading || loadingProdutos) {
-    return (
-      <LoadingContainer>
-        <LoadingSpinner />
-        <LoadingText>Carregando estoque...</LoadingText>
-      </LoadingContainer>
-    );
-  }
-
   return (
     <>
       <HeaderSection>
         <Title>Controle de Estoque</Title>
       </HeaderSection>
 
-      <Card style={{ padding: '24px', marginBottom: '24px' }}>
-        <SearchBar>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#86868b',
-              }}
-            />
-            <Input
-              type="text"
-              placeholder="Buscar por produto ou código..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: '40px' }}
-            />
-          </div>
-          <Select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            style={{ minWidth: '150px' }}
-          >
-            <option value="">Todas as categorias</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </Select>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
-            <input
-              type="checkbox"
-              checked={showLowStock}
-              onChange={(e) => setShowLowStock(e.target.checked)}
-            />
-            Mostrar apenas estoque baixo
-          </label>
-        </SearchBar>
-      </Card>
+      {loading || loadingProdutos ? (
+        <>
+          <SearchBarSkeleton>
+            <SearchInputSkeleton>
+              <Skeleton width="100%" height="44px" radius="12px" />
+            </SearchInputSkeleton>
+            <div style={{ minWidth: '150px' }}>
+              <Skeleton width="100%" height="44px" radius="12px" />
+            </div>
+            <div style={{ minWidth: '200px' }}>
+              <Skeleton width="100%" height="44px" radius="12px" />
+            </div>
+          </SearchBarSkeleton>
 
-      <Card>
-        {estoqueWithProdutos.length === 0 ? (
-          <EmptyState>
-            <EmptyIcon>
-              <Package size={32} color="#86868b" />
-            </EmptyIcon>
-            <h3>Nenhum item encontrado</h3>
-            <p>
-              {searchTerm || categoryFilter
-                ? 'Tente ajustar os filtros de busca'
-                : 'Não há itens no estoque'}
-            </p>
-          </EmptyState>
-        ) : (
-          <Table>
-            <thead>
-              <tr>
-                <TableHeader>Produto</TableHeader>
-                <TableHeader>Código</TableHeader>
-                <TableHeader>Categoria</TableHeader>
-                <TableHeader>Quantidade</TableHeader>
-                <TableHeader>Mínimo</TableHeader>
-                <TableHeader>Status</TableHeader>
-                <TableHeader>Ações</TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {estoqueWithProdutos.map((item) => {
-                const status = getStockStatus(item.quantidade, item.quantidadeMinima);
-                return (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        {item.produto?.nome}
-                        {item.quantidade <= item.quantidadeMinima && (
-                          <AlertTriangle size={16} color="#ffa500" />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>{item.produto?.codigo}</TableCell>
-                    <TableCell>{item.produto?.categoria}</TableCell>
-                    <TableCell>
-                      <strong>{item.quantidade}</strong>
-                    </TableCell>
-                    <TableCell>{item.quantidadeMinima}</TableCell>
-                    <TableCell>
-                      <Badge variant={status.variant}>
-                        {status.label}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <ActionButtons>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleEdit(item)}
-                        >
-                          <Edit size={14} />
-                          Ajustar
-                        </Button>
-                      </ActionButtons>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </tbody>
-          </Table>
-        )}
-        <PaginationContainer>
-          <PageSizeSelector>
-            <label>Itens por página:</label>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(0);
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </PageSizeSelector>
+          <Card>
+            <TableSkeleton rows={pageSize} columns={6} />
+            <PaginationSkeleton />
+          </Card>
+        </>
+      ) : (
+        <>
+          <Card style={{ padding: '24px', marginBottom: '24px' }}>
+            <SearchBar>
+              <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                <Search
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#86868b',
+                  }}
+                />
+                <Input
+                  type="text"
+                  placeholder="Buscar por produto ou código..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ paddingLeft: '40px' }}
+                />
+              </div>
+              <Select
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+                style={{ minWidth: '150px' }}
+              >
+                <option value="">Todas as categorias</option>
+                {categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </Select>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                <input
+                  type="checkbox"
+                  checked={showLowStock}
+                  onChange={(e) => setShowLowStock(e.target.checked)}
+                />
+                Mostrar apenas estoque baixo
+              </label>
+            </SearchBar>
+          </Card>
 
-          <PaginationInfo>
-            Mostrando {estoqueWithProdutos.length} de {totalElements} registros
-          </PaginationInfo>
+          <Card>
+            {estoqueWithProdutos.length === 0 ? (
+              <EmptyState>
+                <EmptyIcon>
+                  <Package size={32} color="#86868b" />
+                </EmptyIcon>
+                <h3>Nenhum item encontrado</h3>
+                <p>
+                  {searchTerm || categoryFilter
+                    ? 'Tente ajustar os filtros de busca'
+                    : 'Não há itens no estoque'}
+                </p>
+              </EmptyState>
+            ) : (
+              <Table>
+                <thead>
+                  <tr>
+                    <TableHeader>Produto</TableHeader>
+                    <TableHeader>Código</TableHeader>
+                    <TableHeader>Categoria</TableHeader>
+                    <TableHeader>Quantidade</TableHeader>
+                    <TableHeader>Mínimo</TableHeader>
+                    <TableHeader>Status</TableHeader>
+                    <TableHeader>Ações</TableHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  {estoqueWithProdutos.map((item) => {
+                    const status = getStockStatus(item.quantidade, item.quantidadeMinima);
+                    return (
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            {item.produto?.nome}
+                            {item.quantidade <= item.quantidadeMinima && (
+                              <AlertTriangle size={16} color="#ffa500" />
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell>{item.produto?.codigo}</TableCell>
+                        <TableCell>{item.produto?.categoria}</TableCell>
+                        <TableCell>
+                          <strong>{item.quantidade}</strong>
+                        </TableCell>
+                        <TableCell>{item.quantidadeMinima}</TableCell>
+                        <TableCell>
+                          <Badge variant={status.variant}>
+                            {status.label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <ActionButtons>
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => handleEdit(item)}
+                            >
+                              <Edit size={14} />
+                              Ajustar
+                            </Button>
+                          </ActionButtons>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            )}
+            <PaginationContainer>
+              <PageSizeSelector>
+                <label>Itens por página:</label>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(0);
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                </select>
+              </PageSizeSelector>
 
-          <PaginationButtons>
-            <PageButton
-              onClick={() => setCurrentPage(prev => prev - 1)}
-              disabled={currentPage === 0}
-            >
-              ←
-            </PageButton>
+              <PaginationInfo>
+                Mostrando {estoqueWithProdutos.length} de {totalElements} registros
+              </PaginationInfo>
 
-            {renderPageNumbers()}
+              <PaginationButtons>
+                <PageButton
+                  onClick={() => setCurrentPage(prev => prev - 1)}
+                  disabled={currentPage === 0}
+                >
+                  ←
+                </PageButton>
 
-            <PageButton
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={currentPage >= totalPages - 1}
-            >
-              →
-            </PageButton>
-          </PaginationButtons>
-        </PaginationContainer>
-      </Card>
+                {renderPageNumbers()}
+
+                <PageButton
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  disabled={currentPage >= totalPages - 1}
+                >
+                  →
+                </PageButton>
+              </PaginationButtons>
+            </PaginationContainer>
+          </Card>
+        </>
+      )}
 
       <EstoqueModal
         isOpen={modalOpen}

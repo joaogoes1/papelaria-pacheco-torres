@@ -23,37 +23,9 @@ import {
 } from '../../styles/components';
 import { theme } from '../../styles/theme';
 import { Cliente } from '../../types';
+import { TableSkeleton, SearchBarSkeleton, SearchInputSkeleton, PaginationSkeleton, Skeleton } from '../Skeleton';
 import ClienteImportModal from './ClienteImportModal';
 import ClienteModal from './ClienteModal';
-
-const LoadingContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  gap: ${theme.spacing[4]};
-`;
-
-const LoadingSpinner = styled.div`
-  width: 48px;
-  height: 48px;
-  border: 4px solid ${theme.colors.gray[200]};
-  border-top-color: ${theme.colors.blue.DEFAULT};
-  border-radius: ${theme.borderRadius.full};
-  animation: spin 1s linear infinite;
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`;
-
-const LoadingText = styled.p`
-  font-size: ${theme.typography.fontSize.lg};
-  color: ${theme.colors.text.secondary};
-`;
 
 const ClientesList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -214,15 +186,6 @@ const ClientesList: React.FC = () => {
     setImportModalOpen(false);
   };
 
-  if (loading) {
-    return (
-      <LoadingContainer>
-        <LoadingSpinner />
-        <LoadingText>Carregando clientes...</LoadingText>
-      </LoadingContainer>
-    );
-  }
-
   return (
     <>
       <HeaderSection>
@@ -239,123 +202,140 @@ const ClientesList: React.FC = () => {
         </HeaderActions>
       </HeaderSection>
 
-      <Card style={{ padding: '24px', marginBottom: '24px' }}>
-        <SearchBar>
-          <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-            <Search
-              size={16}
-              style={{
-                position: 'absolute',
-                left: '12px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                color: '#86868b',
-              }}
-            />
-            <Input
-              type="text"
-              placeholder="Buscar por nome, CPF ou email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: '40px' }}
-            />
-          </div>
-        </SearchBar>
-      </Card>
+      {loading ? (
+        <>
+          <SearchBarSkeleton>
+            <SearchInputSkeleton>
+              <Skeleton width="100%" height="44px" radius="12px" />
+            </SearchInputSkeleton>
+          </SearchBarSkeleton>
 
-      <Card>
-        {clientes.length === 0 ? (
-          <EmptyState>
-            <EmptyIcon>
-              <User size={32} color="#86868b" />
-            </EmptyIcon>
-            <h3>Nenhum cliente encontrado</h3>
-            <p>
-              {searchTerm
-                ? 'Tente ajustar os filtros de busca'
-                : 'Comece cadastrando seu primeiro cliente'}
-            </p>
-          </EmptyState>
-        ) : (
-          <Table>
-            <thead>
-              <tr>
-                <TableHeader>Nome</TableHeader>
-                <TableHeader>CPF</TableHeader>
-                <TableHeader>Telefone</TableHeader>
-                <TableHeader>Email</TableHeader>
-                <TableHeader>Ações</TableHeader>
-              </tr>
-            </thead>
-            <tbody>
-              {clientes.map((cliente) => (
-                <TableRow key={cliente.id}>
-                  <TableCell>{cliente.nome}</TableCell>
-                  <TableCell>{cliente.cpf}</TableCell>
-                  <TableCell>{cliente.telefone}</TableCell>
-                  <TableCell>{cliente.email}</TableCell>
-                  <TableCell>
-                    <ActionButtons>
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => handleEdit(cliente)}
-                      >
-                        <Edit size={14} />
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        onClick={() => handleDelete(cliente.id)}
-                      >
-                        <Trash2 size={14} />
-                      </Button>
-                    </ActionButtons>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </tbody>
-          </Table>
-        )}
-        <PaginationContainer>
-          <PageSizeSelector>
-            <label>Itens por página:</label>
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value));
-                setCurrentPage(0);
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </PageSizeSelector>
+          <Card>
+            <TableSkeleton rows={pageSize} columns={4} />
+            <PaginationSkeleton />
+          </Card>
+        </>
+      ) : (
+        <>
+          <Card style={{ padding: '24px', marginBottom: '24px' }}>
+            <SearchBar>
+              <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
+                <Search
+                  size={16}
+                  style={{
+                    position: 'absolute',
+                    left: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: '#86868b',
+                  }}
+                />
+                <Input
+                  type="text"
+                  placeholder="Buscar por nome, CPF ou email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  style={{ paddingLeft: '40px' }}
+                />
+              </div>
+            </SearchBar>
+          </Card>
 
-          <PaginationInfo>
-            Mostrando {clientes.length} de {totalElements} registros
-          </PaginationInfo>
+          <Card>
+            {clientes.length === 0 ? (
+              <EmptyState>
+                <EmptyIcon>
+                  <User size={32} color="#86868b" />
+                </EmptyIcon>
+                <h3>Nenhum cliente encontrado</h3>
+                <p>
+                  {searchTerm
+                    ? 'Tente ajustar os filtros de busca'
+                    : 'Comece cadastrando seu primeiro cliente'}
+                </p>
+              </EmptyState>
+            ) : (
+              <Table>
+                <thead>
+                  <tr>
+                    <TableHeader>Nome</TableHeader>
+                    <TableHeader>CPF</TableHeader>
+                    <TableHeader>Telefone</TableHeader>
+                    <TableHeader>Email</TableHeader>
+                    <TableHeader>Ações</TableHeader>
+                  </tr>
+                </thead>
+                <tbody>
+                  {clientes.map((cliente) => (
+                    <TableRow key={cliente.id}>
+                      <TableCell>{cliente.nome}</TableCell>
+                      <TableCell>{cliente.cpf}</TableCell>
+                      <TableCell>{cliente.telefone}</TableCell>
+                      <TableCell>{cliente.email}</TableCell>
+                      <TableCell>
+                        <ActionButtons>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => handleEdit(cliente)}
+                          >
+                            <Edit size={14} />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="danger"
+                            onClick={() => handleDelete(cliente.id)}
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </ActionButtons>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            )}
+            <PaginationContainer>
+              <PageSizeSelector>
+                <label>Itens por página:</label>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(0);
+                  }}
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                </select>
+              </PageSizeSelector>
 
-          <PaginationButtons>
-            <PageButton
-              onClick={() => setCurrentPage(prev => prev - 1)}
-              disabled={currentPage === 0}
-            >
-              ←
-            </PageButton>
+              <PaginationInfo>
+                Mostrando {clientes.length} de {totalElements} registros
+              </PaginationInfo>
 
-            {renderPageNumbers()}
+              <PaginationButtons>
+                <PageButton
+                  onClick={() => setCurrentPage(prev => prev - 1)}
+                  disabled={currentPage === 0}
+                >
+                  ←
+                </PageButton>
 
-            <PageButton
-              onClick={() => setCurrentPage(prev => prev + 1)}
-              disabled={currentPage >= totalPages - 1}
-            >
-              →
-            </PageButton>
-          </PaginationButtons>
-        </PaginationContainer>
-      </Card>
+                {renderPageNumbers()}
+
+                <PageButton
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  disabled={currentPage >= totalPages - 1}
+                >
+                  →
+                </PageButton>
+              </PaginationButtons>
+            </PaginationContainer>
+          </Card>
+        </>
+      )}
 
       <ClienteModal
         isOpen={modalOpen}
