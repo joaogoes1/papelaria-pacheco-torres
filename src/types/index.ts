@@ -48,3 +48,35 @@ export interface ApiResponse<T> {
   data: T;
   status: number;
 }
+
+export interface ReceitaMensal {
+  mes: string;
+  receita: number;
+  totalVendas: number;
+}
+
+export interface TopCliente {
+  clienteId: string;
+  clienteNome: string;
+  totalGasto: number;
+  totalCompras: number;
+}
+
+export interface VendaPorCategoria {
+  categoria: string;
+  receita: number;
+  quantidadeVendida: number;
+}
+
+export interface FinanceiroData {
+  receitaTotal: number;
+  receitaMensal: number;
+  receitaDiaria: number;
+  ticketMedio: number;
+  totalVendas: number;
+  totalVendasMes: number;
+  crescimentoMensal: number;
+  receitaPorMes: ReceitaMensal[];
+  topClientes: TopCliente[];
+  vendasPorCategoria: VendaPorCategoria[];
+}

@@ -21,6 +21,7 @@ import VendasList from './components/Vendas/VendasList';
 import Relatorios from './components/Relatorios/Relatorios';
 import Login from './components/Login/Login';
 import SalesForecast from './components/Forecast/SalesForecast';
+import Financeiro from './components/Financeiro/Financeiro';
 
 // Page titles mapping
 const pageTitles: Record<string, string> = {
@@ -31,6 +32,7 @@ const pageTitles: Record<string, string> = {
   '/produtos': 'Produtos',
   '/estoque': 'Estoque',
   '/vendas': 'Vendas',
+  '/financeiro': 'Financeiro',
   '/previsao': 'Previsão de Vendas',
   '/relatorios': 'Relatórios',
 };
@@ -187,6 +189,18 @@ const App: React.FC = () => {
                       <PageTransition>
                         <Container>
                           <Relatorios />
+                        </Container>
+                      </PageTransition>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/financeiro"
+                  element={
+                    <ProtectedRoute>
+                      <PageTransition>
+                        <Container>
+                          <Financeiro />
                         </Container>
                       </PageTransition>
                     </ProtectedRoute>

@@ -12,7 +12,8 @@ import {
   Home,
   Brain,
   FileBarChart,
-  TrendingUp
+  TrendingUp,
+  DollarSign
 } from 'lucide-react';
 
 const MobileOverlay = styled.div<{ isOpen: boolean }>`
@@ -72,6 +73,7 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen = false, onClose }) => {
   ];
 
   const analyticsItems = [
+    { id: 'financeiro', path: '/financeiro', label: 'Financeiro', icon: DollarSign },
     { id: 'previsao', path: '/previsao', label: 'Previsão IA', icon: Brain, badge: 'IA', badgeColor: '#5856d6' },
     { id: 'relatorios', path: '/relatorios', label: 'Relatórios', icon: FileBarChart },
   ];
