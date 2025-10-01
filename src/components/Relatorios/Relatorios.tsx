@@ -7,6 +7,7 @@ import { vendasAPI, clientesAPI, produtosAPI, estoqueAPI } from '../../services/
 import { MetricCardSkeleton, Skeleton } from '../Skeleton';
 import { toast } from 'react-toastify';
 import { AnimatedCounter } from '../AnimatedCounter';
+import { MetricCard } from '../MetricCard';
 
 const Title = styled.h1`
   font-size: 24px;
@@ -298,78 +299,54 @@ const Relatorios: React.FC = () => {
         </StatsGrid>
       ) : (
         <StatsGrid>
-        <StatsCard>
-          <StatsIcon color="#007aff">
-            <TrendingUp size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Faturamento Total</StatsTitle>
-            <StatsValue>
-              R$ <AnimatedCounter value={stats.faturamentoTotal} decimals={2} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
+          <MetricCard
+            icon={TrendingUp}
+            iconColor="#007aff"
+            iconBgColor="#E3F2FD"
+            value={<>R$ <AnimatedCounter value={stats.faturamentoTotal} decimals={2} /></>}
+            label="Faturamento Total"
+          />
 
-        <StatsCard>
-          <StatsIcon color="#34c759">
-            <BarChart3 size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Total de Vendas</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalVendas} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
+          <MetricCard
+            icon={BarChart3}
+            iconColor="#34c759"
+            iconBgColor="#E8F5E9"
+            value={<AnimatedCounter value={stats.totalVendas} />}
+            label="Total de Vendas"
+          />
 
-        <StatsCard>
-          <StatsIcon color="#af52de">
-            <Calendar size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Vendas Hoje</StatsTitle>
-            <StatsValue>
-              R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
+          <MetricCard
+            icon={Calendar}
+            iconColor="#af52de"
+            iconBgColor="#F3E5F5"
+            value={<>R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} /></>}
+            label="Vendas Hoje"
+          />
 
-        <StatsCard>
-          <StatsIcon color="#ff9500">
-            <Users size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Total de Clientes</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalClientes} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
+          <MetricCard
+            icon={Users}
+            iconColor="#ff9500"
+            iconBgColor="#FFF3E0"
+            value={<AnimatedCounter value={stats.totalClientes} />}
+            label="Total de Clientes"
+          />
 
-        <StatsCard>
-          <StatsIcon color="#00d4aa">
-            <Package size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Produtos Cadastrados</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.totalProdutos} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
+          <MetricCard
+            icon={Package}
+            iconColor="#00d4aa"
+            iconBgColor="#E0F7FA"
+            value={<AnimatedCounter value={stats.totalProdutos} />}
+            label="Produtos Cadastrados"
+          />
 
-        <StatsCard>
-          <StatsIcon color="#ff6b6b">
-            <Package size={24} />
-          </StatsIcon>
-          <StatsContent>
-            <StatsTitle>Produtos Baixo Estoque</StatsTitle>
-            <StatsValue>
-              <AnimatedCounter value={stats.produtosBaixoEstoque} />
-            </StatsValue>
-          </StatsContent>
-        </StatsCard>
-      </StatsGrid>
+          <MetricCard
+            icon={Package}
+            iconColor="#ff6b6b"
+            iconBgColor="#FFEBEE"
+            value={<AnimatedCounter value={stats.produtosBaixoEstoque} />}
+            label="Produtos Baixo Estoque"
+          />
+        </StatsGrid>
       )}
 
       {loading ? (

@@ -18,9 +18,10 @@ import {
   TableCard,
   Table,
 } from './Financeiro.styles';
-import { TrendingUp, TrendingDown, DollarSign, ShoppingCart, CreditCard, Target } from 'lucide-react';
+import { DollarSign, ShoppingCart, CreditCard, Target } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { MetricCardSkeleton, MetricCardsSkeletonGrid, ChartSkeleton, ChartsSkeletonGrid, TableSkeleton } from '../Skeleton';
+import { MetricCard } from '../MetricCard';
 
 const PageHeader = styled.div`
   margin-bottom: 32px;
@@ -215,57 +216,57 @@ const Financeiro: React.FC = () => {
       <FinanceiroContainer>
         {/* Cards de Estatísticas */}
         <StatsGrid>
-          <StatCard>
-            <DollarSign size={32} color="#007aff" />
-            <div>
-              <StatValue>{formatCurrency(data.receitaTotal)}</StatValue>
-              <StatLabel>Receita Total</StatLabel>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={DollarSign}
+            iconColor="#007aff"
+            iconBgColor="#E3F2FD"
+            value={formatCurrency(data.receitaTotal)}
+            label="Receita Total"
+          />
 
-          <StatCard>
-            <CreditCard size={32} color="#34C759" />
-            <div>
-              <StatValue>{formatCurrency(data.receitaMensal)}</StatValue>
-              <StatLabel>Receita Mensal</StatLabel>
-              <StatChange isPositive={data.crescimentoMensal >= 0}>
-                {data.crescimentoMensal >= 0 ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-                {Math.abs(data.crescimentoMensal).toFixed(2)}%
-              </StatChange>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={CreditCard}
+            iconColor="#34C759"
+            iconBgColor="#E8F5E9"
+            value={formatCurrency(data.receitaMensal)}
+            label="Receita Mensal"
+            trend={{
+              value: data.crescimentoMensal,
+              isPositive: data.crescimentoMensal >= 0
+            }}
+          />
 
-          <StatCard>
-            <ShoppingCart size={32} color="#FF9500" />
-            <div>
-              <StatValue>{formatCurrency(data.receitaDiaria)}</StatValue>
-              <StatLabel>Receita Hoje</StatLabel>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={ShoppingCart}
+            iconColor="#FF9500"
+            iconBgColor="#FFF3E0"
+            value={formatCurrency(data.receitaDiaria)}
+            label="Receita Hoje"
+          />
 
-          <StatCard>
-            <Target size={32} color="#5856d6" />
-            <div>
-              <StatValue>{formatCurrency(data.ticketMedio)}</StatValue>
-              <StatLabel>Ticket Médio</StatLabel>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={Target}
+            iconColor="#5856d6"
+            iconBgColor="#F3E5F5"
+            value={formatCurrency(data.ticketMedio)}
+            label="Ticket Médio"
+          />
 
-          <StatCard>
-            <ShoppingCart size={32} color="#FF2D55" />
-            <div>
-              <StatValue>{data.totalVendas}</StatValue>
-              <StatLabel>Total de Vendas</StatLabel>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={ShoppingCart}
+            iconColor="#FF2D55"
+            iconBgColor="#FFEBEE"
+            value={data.totalVendas}
+            label="Total de Vendas"
+          />
 
-          <StatCard>
-            <ShoppingCart size={32} color="#AF52DE" />
-            <div>
-              <StatValue>{data.totalVendasMes}</StatValue>
-              <StatLabel>Vendas do Mês</StatLabel>
-            </div>
-          </StatCard>
+          <MetricCard
+            icon={ShoppingCart}
+            iconColor="#AF52DE"
+            iconBgColor="#F3E5F5"
+            value={data.totalVendasMes}
+            label="Vendas do Mês"
+          />
         </StatsGrid>
 
         {/* Gráficos */}

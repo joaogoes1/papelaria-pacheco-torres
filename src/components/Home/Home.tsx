@@ -20,6 +20,7 @@ import { useDashboardStats } from '../../hooks/useDashboardData';
 import { usePageTitle } from '../../hooks/usePageTitle';
 import AnimatedCounter from '../AnimatedCounter';
 import { MetricCardsSkeletonGrid, MetricCardSkeleton } from '../Skeleton';
+import { MetricCard } from '../MetricCard';
 
 const HomeWrapper = styled.div`
   max-width: 1400px;
@@ -454,65 +455,41 @@ const Home: React.FC = () => {
         </MetricCardsSkeletonGrid>
       ) : (
         <StatsGrid>
-          <StatCard>
-            <StatHeader>
-              <StatIcon color="#0051D5" bgColor="#E3F2FD">
-                <Users size={28} />
-              </StatIcon>
-              <StatTrend positive>
-                <TrendingUp size={16} /> +12%
-              </StatTrend>
-            </StatHeader>
-            <StatValue>
-              <AnimatedCounter value={stats.totalClientes} />
-            </StatValue>
-            <StatLabel>Total de Clientes</StatLabel>
-          </StatCard>
+          <MetricCard
+            icon={Users}
+            iconColor="#0051D5"
+            iconBgColor="#E3F2FD"
+            value={<AnimatedCounter value={stats.totalClientes} />}
+            label="Total de Clientes"
+            trend={{ value: 12, isPositive: true }}
+          />
 
-          <StatCard>
-            <StatHeader>
-              <StatIcon color="#2E7D32" bgColor="#E8F5E9">
-                <Package size={28} />
-              </StatIcon>
-              <StatTrend positive>
-                <TrendingUp size={16} /> +8%
-              </StatTrend>
-            </StatHeader>
-            <StatValue>
-              <AnimatedCounter value={stats.totalProdutos} />
-            </StatValue>
-            <StatLabel>Produtos Ativos</StatLabel>
-          </StatCard>
+          <MetricCard
+            icon={Package}
+            iconColor="#2E7D32"
+            iconBgColor="#E8F5E9"
+            value={<AnimatedCounter value={stats.totalProdutos} />}
+            label="Produtos Ativos"
+            trend={{ value: 8, isPositive: true }}
+          />
 
-          <StatCard>
-            <StatHeader>
-              <StatIcon color="#E65100" bgColor="#FFF3E0">
-                <Warehouse size={28} />
-              </StatIcon>
-              <StatTrend positive>
-                <TrendingUp size={16} /> +5%
-              </StatTrend>
-            </StatHeader>
-            <StatValue>
-              <AnimatedCounter value={stats.totalItensEstoque} />
-            </StatValue>
-            <StatLabel>Itens em Estoque</StatLabel>
-          </StatCard>
+          <MetricCard
+            icon={Warehouse}
+            iconColor="#E65100"
+            iconBgColor="#FFF3E0"
+            value={<AnimatedCounter value={stats.totalItensEstoque} />}
+            label="Itens em Estoque"
+            trend={{ value: 5, isPositive: true }}
+          />
 
-          <StatCard>
-            <StatHeader>
-              <StatIcon color="#7B1FA2" bgColor="#F3E5F5">
-                <ShoppingCart size={28} />
-              </StatIcon>
-              <StatTrend positive>
-                <TrendingUp size={16} /> +15%
-              </StatTrend>
-            </StatHeader>
-            <StatValue>
-              R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} />
-            </StatValue>
-            <StatLabel>Vendas Hoje</StatLabel>
-          </StatCard>
+          <MetricCard
+            icon={ShoppingCart}
+            iconColor="#7B1FA2"
+            iconBgColor="#F3E5F5"
+            value={<>R$ <AnimatedCounter value={stats.vendasHoje} decimals={2} /></>}
+            label="Vendas Hoje"
+            trend={{ value: 15, isPositive: true }}
+          />
         </StatsGrid>
       )}
 
